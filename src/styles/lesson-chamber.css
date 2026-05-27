@@ -1,0 +1,1161 @@
+/* Lesson chamber — concept focus (top) + content (center) + answers (bottom) */
+
+.la-lesson-chamber {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(8, 10, 22, 0.92) 0%, rgba(6, 8, 18, 0.98) 100%);
+  border: 1px solid rgba(121, 146, 224, 0.22);
+}
+
+.la-lesson-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.la-lesson-center {
+  min-height: 200px;
+}
+
+/* —— Concept Visual Chamber (educational anchor) —— */
+.concept-visual-chamber {
+  flex-shrink: 0;
+  padding: 12px 12px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.concept-visual-chamber__frame {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: clamp(168px, 26vh, 240px);
+  border: 1px solid rgba(121, 146, 224, 0.35);
+  background: rgba(8, 12, 28, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.concept-visual-chamber__spotlight {
+  position: absolute;
+  left: 50%;
+  top: 54%;
+  width: min(220px, 55%);
+  height: min(220px, 55%);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0%, transparent 65%);
+  filter: blur(10px);
+}
+
+.concept-visual-chamber__head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(180deg, rgba(6, 8, 18, 0.85) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.concept-visual-chamber__kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tier-accent-a, #22d3ee);
+}
+
+.concept-visual-chamber__tags {
+  font-size: 11px;
+  color: rgba(180, 200, 230, 0.75);
+  text-align: right;
+}
+
+.concept-visual-chamber .lesson-visual-scene {
+  position: relative;
+  height: clamp(168px, 26vh, 240px);
+  min-height: 168px;
+}
+
+.lesson-visual-scene {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lesson-visual-scene--focus {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+}
+
+.lesson-visual-scene__core {
+  position: absolute;
+  inset: 0;
+}
+
+.lesson-visual-scene__bg,
+.lesson-visual-scene__mid,
+.lesson-visual-scene__fg,
+.lesson-visual-scene__fx {
+  position: absolute;
+  inset: 0;
+}
+
+/* Immutable anchor — never unmounted during lesson UI state changes */
+.lesson-visual-scene__anchor {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.lesson-visual-scene__anchor .bowling-ball-motif {
+  z-index: 1;
+}
+
+/* Dynamic overlays — questions, curiosity, feedback (modifiable) */
+.lesson-visual-scene__dynamic {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.lesson-visual-scene__dynamic-item {
+  position: absolute;
+  inset: 0;
+}
+
+.lesson-visual-scene__dynamic .lesson-motif {
+  opacity: 0.55;
+}
+
+.lesson-visual-scene__force-overlays {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.lesson-visual-scene__bg { z-index: 0; }
+.lesson-visual-scene__mid { z-index: 1; }
+.lesson-visual-scene__fg { z-index: 2; }
+.lesson-visual-scene__fx { z-index: 3; }
+
+.lesson-visual-scene__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.22;
+  filter: blur(1px) saturate(1.15);
+}
+
+.lesson-visual-scene__img--mid {
+  opacity: 0.28;
+  object-position: center 40%;
+}
+
+.lesson-visual-scene__chamber-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 20%, color-mix(in srgb, var(--scene-a) 18%, transparent), transparent 55%),
+    radial-gradient(ellipse 80% 60% at 80% 70%, color-mix(in srgb, var(--scene-b) 12%, transparent), transparent 50%),
+    linear-gradient(180deg, rgba(8, 10, 22, 0.3) 0%, rgba(8, 10, 22, 0.85) 100%);
+}
+
+.lesson-visual-scene__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(120, 146, 224, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 146, 224, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.35;
+  mask-image: linear-gradient(180deg, black 0%, transparent 85%);
+}
+
+.lesson-visual-scene__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: radial-gradient(ellipse 85% 75% at 50% 45%, transparent 30%, rgba(6, 8, 18, 0.75) 100%);
+}
+
+.lesson-visual-scene__glass-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    125deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.04) 48%,
+    transparent 56%
+  );
+  animation: shinePass 8s ease-in-out infinite;
+}
+
+.lesson-visual-scene__particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--scene-a);
+  opacity: 0.35;
+  left: calc(mod(var(--i) * 19 + 5, 100) * 1%);
+  top: calc(mod(var(--i) * 27 + 10, 100) * 1%);
+  animation: float 9s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.6s);
+  box-shadow: 0 0 6px var(--scene-a);
+}
+
+.lesson-visual-scene__pulse-ring {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 200px;
+  height: 200px;
+  margin: -100px 0 0 -100px;
+  border: 1px solid color-mix(in srgb, var(--scene-a) 35%, transparent);
+  border-radius: 50%;
+  animation: orbitSpin 16s linear infinite;
+  opacity: 0.25;
+}
+
+.lesson-visual-scene__energy-sweep {
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(
+    from 0deg at 50% 45%,
+    transparent 0deg,
+    color-mix(in srgb, var(--scene-a) 8%, transparent) 40deg,
+    transparent 80deg
+  );
+  animation: orbitSpin 22s linear infinite reverse;
+  opacity: 0.4;
+}
+
+/* Scene-specific chamber tints */
+.scene-force-motion .lesson-visual-scene__chamber-gradient {
+  background-color: rgba(12, 24, 48, 0.4);
+}
+
+.scene-contact-fields .lesson-visual-scene__chamber-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(34, 211, 238, 0.12), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 75% 60%, rgba(139, 92, 246, 0.14), transparent 50%),
+    radial-gradient(ellipse 60% 50% at 30% 60%, rgba(56, 189, 248, 0.1), transparent 55%);
+}
+
+.scene-inertia-ice .lesson-visual-scene__chamber-gradient {
+  background: radial-gradient(ellipse 80% 50% at 50% 30%, rgba(103, 232, 249, 0.1), transparent 60%);
+}
+
+.scene-f-equals-ma .lesson-visual-scene__chamber-gradient {
+  background: radial-gradient(ellipse 70% 55% at 55% 50%, rgba(139, 92, 246, 0.14), transparent 55%);
+}
+
+/* —— Motifs (CSS/SVG-style shapes) —— */
+.lesson-visual-scene__motif-stage {
+  position: absolute;
+  inset: 12% 8% 18%;
+  z-index: 2;
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__motif-stage {
+  inset: 8% 12% 12%;
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__pulse-ring {
+  top: 50%;
+  opacity: 0.35;
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__vignette {
+  background: radial-gradient(ellipse 90% 80% at 50% 42%, transparent 25%, rgba(6, 8, 18, 0.55) 100%);
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__bg--defocus {
+  filter: blur(3px) saturate(0.78) brightness(0.68);
+  transform: scale(1.03);
+  opacity: 0.88;
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__fg {
+  opacity: 0.32;
+}
+
+.lesson-visual-scene--focus .lesson-visual-scene__grid {
+  opacity: 0.18;
+}
+
+.lesson-motif {
+  position: absolute;
+  opacity: 0.35;
+  filter: blur(0.2px);
+}
+
+.lesson-visual-scene--focus .lesson-motif {
+  opacity: 0.85;
+}
+
+/* —— Bowling ball: obsidian lacquer physics object —— */
+.bowling-ball-motif {
+  position: absolute;
+  left: 18%;
+  top: 30%;
+  width: 76px;
+  height: 88px;
+  z-index: 6;
+  opacity: 0.95;
+}
+
+.bowling-ball-motif--focus {
+  left: 50%;
+  top: 50%;
+  width: 100px;
+  height: 116px;
+  margin-left: -50px;
+  margin-top: -58px;
+}
+
+.bowling-ball-motif__sphere {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 76px;
+  height: 76px;
+  margin-left: -38px;
+  border-radius: 50%;
+  animation: bowlingBallPush 4.5s ease-in-out infinite;
+  transform-origin: center center;
+  filter: contrast(1.08) saturate(0.92);
+}
+
+.bowling-ball-motif--focus .bowling-ball-motif__sphere {
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+}
+
+.bowling-ball-motif__lacquer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 26% 20%, rgba(255, 255, 255, 0.42) 0%, transparent 14%),
+    radial-gradient(circle at 72% 82%, rgba(0, 0, 0, 0.65) 0%, transparent 38%),
+    radial-gradient(ellipse 130% 120% at 52% 55%, #3a3a42 0%, #18181e 38%, #0a0a0e 72%, #050508 100%);
+  box-shadow:
+    inset -14px -16px 28px rgba(0, 0, 0, 0.75),
+    inset 8px 10px 18px rgba(255, 255, 255, 0.06);
+}
+
+.bowling-ball-motif__specular {
+  position: absolute;
+  width: 38%;
+  height: 24%;
+  left: 18%;
+  top: 10%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.2) 42%, transparent 72%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.bowling-ball-motif__specular-rim {
+  position: absolute;
+  width: 18%;
+  height: 10%;
+  right: 14%;
+  bottom: 22%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.18) 0%, transparent 80%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.bowling-ball-motif__environment-roll {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 200deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.04) 40deg,
+    transparent 80deg,
+    rgba(255, 255, 255, 0.07) 130deg,
+    transparent 200deg
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.bowling-ball-motif__edge-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgba(0, 0, 0, 0.5);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.bowling-ball-motif--focus .bowling-ball-motif__edge-rim {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 12px rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.55);
+}
+
+.bowling-ball-motif__holes {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.bowling-ball-motif__hole {
+  position: absolute;
+  border-radius: 50%;
+  isolation: isolate;
+  background: radial-gradient(circle at 40% 34%, #2a2a32 0%, #0c0c10 40%, #000 100%);
+  /* Independent cavity rim — prevents merged “cloud” read */
+  outline: 1px solid rgba(0, 0, 0, 0.92);
+  outline-offset: -0.5px;
+}
+
+/*
+ * Ergonomic 3-hole grip (not symmetric — comfort-driven triangle):
+ * middle + ring = dominant upper pair; thumb = smaller anchor, shifted right + up
+ */
+.bowling-ball-motif__hole--thumb {
+  /* ~13%: lerp between reduced (11%) and original (24%), biased small (~0.15) */
+  width: 13%;
+  height: 12.5%;
+  left: 37%;
+  top: 47%;
+  background: radial-gradient(circle at 42% 36%, #26262e 0%, #08080c 48%, #000 100%);
+  box-shadow:
+    inset 3px 4px 8px rgba(0, 0, 0, 0.98),
+    inset -1px -1px 3px rgba(60, 60, 68, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.bowling-ball-motif__hole--middle {
+  width: 15%;
+  height: 14.5%;
+  left: 29%;
+  top: 23%;
+  background: radial-gradient(circle at 35% 30%, #24242a 0%, #060608 44%, #000 100%);
+  box-shadow:
+    inset 3px 5px 10px rgba(0, 0, 0, 0.98),
+    inset -2px -1px 3px rgba(58, 58, 66, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.bowling-ball-motif__hole--ring {
+  width: 14.5%;
+  height: 14%;
+  left: 51%;
+  top: 24%;
+  background: radial-gradient(circle at 45% 32%, #1e1e24 0%, #040406 46%, #000 100%);
+  box-shadow:
+    inset 4px 4px 9px rgba(0, 0, 0, 0.96),
+    inset -1px -2px 3px rgba(52, 52, 60, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.bowling-ball-motif--focus .bowling-ball-motif__hole--thumb {
+  width: 12.85%;
+  height: 13%;
+  left: 36.5%;
+  top: 46%;
+}
+
+.bowling-ball-motif--focus .bowling-ball-motif__hole--middle {
+  width: 14.5%;
+  height: 14%;
+  left: 28.5%;
+  top: 22%;
+}
+
+.bowling-ball-motif--focus .bowling-ball-motif__hole--ring {
+  width: 14%;
+  height: 13.5%;
+  left: 50.5%;
+  top: 23%;
+}
+
+.bowling-ball-motif__contact-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 72%;
+  height: 16%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.75) 0%, transparent 72%);
+  filter: blur(8px);
+  z-index: 0;
+}
+
+.bowling-ball-motif__ground-reflect {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 55%;
+  height: 8%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  filter: blur(4px);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.lesson-visual-scene--focus .lesson-motif--motion-lines {
+  left: 56%;
+  top: 50%;
+  width: 130px;
+  opacity: 0.75;
+  z-index: 3;
+}
+
+.lesson-visual-scene--focus .lesson-motif--force-arrows {
+  right: 26%;
+  top: 36%;
+  opacity: 0.7;
+  z-index: 3;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--scene-a) 50%, transparent));
+}
+
+.lesson-visual-scene--focus .lesson-motif--interaction-pulse {
+  left: 50%;
+  top: 50%;
+  margin-left: -54px;
+  margin-top: -54px;
+  width: 108px;
+  height: 108px;
+  opacity: 0.55;
+  z-index: 2;
+}
+
+.lesson-force-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.lesson-force-overlay--arrow {
+  left: 62%;
+  top: 46%;
+  width: 72px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--scene-a), transparent);
+  transform: rotate(-8deg);
+  opacity: 0.55;
+  animation: forceArrowPulse 2.2s ease-in-out infinite;
+}
+
+.lesson-force-overlay--arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -5px;
+  border: 5px solid transparent;
+  border-left: 8px solid var(--scene-a);
+}
+
+.lesson-force-overlay--vector {
+  left: 38%;
+  top: 58%;
+  width: 100px;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 6px,
+    color-mix(in srgb, var(--scene-b) 70%, transparent) 6px,
+    transparent 12px
+  );
+  opacity: 0.45;
+  animation: streakDrift 2.5s linear infinite;
+}
+
+.lesson-force-overlay--ring {
+  left: 50%;
+  top: 52%;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border: 1px dashed color-mix(in srgb, var(--scene-a) 40%, transparent);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: motifPulse 3s ease-in-out infinite;
+}
+
+@keyframes forceArrowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: rotate(-8deg) translateX(0);
+  }
+  50% {
+    opacity: 0.75;
+    transform: rotate(-8deg) translateX(6px);
+  }
+}
+
+@keyframes bowlingBallPush {
+  0%,
+  18% {
+    transform: translate(0, 0);
+  }
+  48% {
+    transform: translate(52px, 3px);
+  }
+  62% {
+    transform: translate(52px, 3px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Visual reactions tied to answer feedback */
+.lesson-visual-scene--react-correct .lesson-visual-scene__energy-sweep {
+  opacity: 0.75;
+  animation-duration: 4s;
+}
+
+.lesson-visual-scene--react-correct .bowling-ball-motif__sphere {
+  animation: bowlingBallCorrect 0.9s ease-out forwards;
+}
+
+.lesson-visual-scene--react-correct .bowling-ball-motif__specular {
+  opacity: 1;
+}
+
+.lesson-visual-scene--react-correct .lesson-motif--motion-lines {
+  animation: streakDrift 0.6s linear infinite;
+  opacity: 0.7;
+}
+
+.lesson-visual-scene--react-correct .lesson-motif--interaction-pulse {
+  animation: motifPulse 0.8s ease-out 2;
+  opacity: 0.65;
+}
+
+.lesson-visual-scene--react-incorrect .bowling-ball-motif__sphere {
+  animation: visualResetShake 0.55s ease-out;
+}
+
+.lesson-visual-scene--react-incorrect .lesson-motif--force-arrows {
+  animation: arrowHighlight 0.7s ease-out;
+  opacity: 0.55;
+}
+
+.concept-visual-chamber--correct .concept-visual-chamber__frame {
+  border-color: rgba(74, 222, 128, 0.45);
+  box-shadow: inset 0 0 60px rgba(74, 222, 128, 0.08);
+}
+
+.concept-visual-chamber--incorrect .concept-visual-chamber__frame {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+@keyframes bowlingBallCorrect {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(64px, 2px) scale(1.06);
+  }
+  100% {
+    transform: translate(48px, 0) scale(1.02);
+  }
+}
+
+@keyframes visualResetShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes arrowHighlight {
+  0% {
+    opacity: 0.2;
+    transform: rotate(-15deg) scale(0.95);
+  }
+  100% {
+    opacity: 0.6;
+    transform: rotate(-8deg) scale(1.05);
+  }
+}
+
+.lesson-motif--motion-lines {
+  left: 28%;
+  top: 42%;
+  width: 140px;
+  height: 40px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 8px,
+    color-mix(in srgb, var(--scene-a) 50%, transparent) 8px,
+    transparent 16px
+  );
+  mask-image: linear-gradient(90deg, transparent, black 30%, black 70%, transparent);
+  animation: streakDrift 3s linear infinite;
+}
+
+.lesson-motif--force-arrows {
+  right: 22%;
+  top: 28%;
+  width: 100px;
+  height: 100px;
+  background:
+    linear-gradient(var(--scene-a), var(--scene-a)) center/4px 50px no-repeat,
+    linear-gradient(90deg, var(--scene-a), var(--scene-a)) center/50px 4px no-repeat;
+  opacity: 0.3;
+  transform: rotate(-15deg);
+}
+
+.lesson-motif--interaction-pulse {
+  left: 22%;
+  top: 30%;
+  width: 100px;
+  height: 100px;
+  border: 2px solid color-mix(in srgb, var(--scene-a) 45%, transparent);
+  border-radius: 50%;
+  animation: motifPulse 2.5s ease-in-out infinite;
+}
+
+.lesson-motif--gravity-field {
+  left: 50%;
+  top: 20%;
+  width: 2px;
+  height: 120px;
+  margin-left: -1px;
+  background: linear-gradient(180deg, transparent, var(--scene-a), transparent);
+  box-shadow: 0 0 20px var(--scene-a);
+}
+
+.lesson-motif--magnet-arcs {
+  right: 20%;
+  top: 35%;
+  width: 80px;
+  height: 80px;
+  border: 3px solid color-mix(in srgb, var(--scene-b) 50%, transparent);
+  border-radius: 50%;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  transform: rotate(45deg);
+}
+
+.lesson-motif--contact-ripple {
+  left: 25%;
+  bottom: 35%;
+  width: 60px;
+  height: 60px;
+  border: 1px solid color-mix(in srgb, var(--scene-a) 40%, transparent);
+  border-radius: 50%;
+  animation: motifPulse 3s ease-in-out infinite;
+}
+
+.lesson-motif--gravity-pull {
+  left: 48%;
+  top: 12%;
+  width: 4px;
+  height: 140px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent 0%, var(--scene-a) 35%, var(--scene-b) 100%);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--scene-a) 55%, transparent);
+  animation: gravityPull 2.8s ease-in-out infinite;
+}
+
+.lesson-motif--push-force-arrows {
+  right: 18%;
+  top: 32%;
+  width: 110px;
+  height: 110px;
+  background:
+    linear-gradient(var(--scene-a), var(--scene-a)) 50% 20%/4px 55px no-repeat,
+    linear-gradient(90deg, var(--scene-a), var(--scene-a)) 20% 50%/55px 4px no-repeat,
+    linear-gradient(135deg, var(--scene-a), var(--scene-a)) 72% 28%/28px 4px no-repeat;
+  opacity: 0.42;
+  transform: rotate(-8deg);
+  animation: motifPulse 2.2s ease-in-out infinite;
+}
+
+.lesson-motif--metal-float {
+  right: 28%;
+  top: 42%;
+  width: 22px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(145deg, #94a3b8, #475569);
+  box-shadow: 0 0 16px var(--scene-b);
+  animation: metalFloat 3.5s ease-in-out infinite;
+}
+
+.lesson-motif--metal-float::before,
+.lesson-motif--metal-float::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 10px;
+  border-radius: 2px;
+  background: linear-gradient(145deg, #cbd5e1, #64748b);
+  box-shadow: 0 0 12px var(--scene-b);
+}
+
+.lesson-motif--metal-float::before {
+  left: -28px;
+  top: -18px;
+  animation: metalFloat 4s ease-in-out infinite reverse;
+}
+
+.lesson-motif--metal-float::after {
+  right: -24px;
+  top: 12px;
+  animation: metalFloat 3.2s ease-in-out infinite;
+}
+
+/* Dual bowling ball collision — Module 2 contact forces */
+.collision-bowling-motif {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(88%, 320px);
+  height: min(70%, 200px);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.collision-bowling-motif__ball {
+  position: relative;
+  flex: 0 0 auto;
+  width: 42%;
+  max-width: 140px;
+  aspect-ratio: 1;
+}
+
+.collision-bowling-motif__ball--a {
+  animation: collisionBallLeft 2.4s ease-in-out infinite;
+}
+
+.collision-bowling-motif__ball--b {
+  animation: collisionBallRight 2.4s ease-in-out infinite;
+}
+
+.collision-bowling-motif__ball .bowling-ball-motif {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  inset: auto;
+}
+
+.collision-bowling-motif__shockwave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--scene-a) 70%, transparent);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--scene-b) 50%, transparent);
+  animation: collisionShock 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.lesson-force-overlay--shockwave {
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--scene-a) 35%, transparent);
+  animation: collisionShock 2.4s ease-in-out infinite;
+}
+
+.lesson-visual-scene--fx-impact-pulse .lesson-visual-scene__pulse-ring {
+  animation-duration: 1.2s;
+  opacity: 0.55;
+}
+
+.lesson-visual-scene--fx-slow-pulse .lesson-visual-scene__energy-sweep {
+  animation-duration: 5s;
+}
+
+.lesson-visual-scene--fx-arc-pulse .lesson-motif--magnet-arcs {
+  animation: motifPulse 1.8s ease-in-out infinite;
+}
+
+.lesson-visual-scene--fx-gravity-stream .lesson-motif--gravity-pull {
+  animation: gravityPull 1.6s ease-in-out infinite;
+}
+
+.lesson-visual-scene--fx-friction-glow .lesson-motif--contact-ripple {
+  box-shadow: 0 0 24px color-mix(in srgb, var(--scene-a) 45%, transparent);
+}
+
+.lesson-visual-scene--motion-collision-shockwave .collision-bowling-motif__shockwave {
+  opacity: 1;
+}
+
+/* Curiosity overlay hooks — dynamic layer only; anchor unchanged */
+.lesson-visual-scene--curiosity-force-arrows .lesson-force-overlay--arrow {
+  opacity: 1;
+}
+
+.lesson-visual-scene--curiosity-motion-lines .lesson-motif--motion-lines {
+  opacity: 0.7;
+}
+
+.lesson-visual-scene--curiosity-interaction-pulse .lesson-visual-scene__pulse-ring {
+  animation-duration: 1.4s;
+  opacity: 0.6;
+}
+
+.lesson-visual-scene--curiosity-contact-ripple .lesson-motif--contact-ripple {
+  opacity: 0.75;
+  animation-duration: 1.8s;
+}
+
+.lesson-visual-scene--curiosity-gravity-pull .lesson-motif--gravity-pull {
+  opacity: 0.8;
+}
+
+.lesson-visual-scene--curiosity-magnet-arcs .lesson-motif--magnet-arcs {
+  opacity: 0.75;
+  animation: motifPulse 1.6s ease-in-out infinite;
+}
+
+.lesson-motif--field-lines {
+  inset: 15%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 20px,
+    rgba(139, 92, 246, 0.08) 20px,
+    transparent 40px
+  );
+  opacity: 0.25;
+}
+
+.lesson-motif--hockey-puck {
+  left: 20%;
+  top: 45%;
+  width: 56px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #1e293b, #0f172a);
+  box-shadow: 0 0 24px var(--scene-a);
+  animation: motifFloat 6s ease-in-out infinite;
+}
+
+.lesson-motif--motion-trail {
+  left: 24%;
+  top: 48%;
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--scene-a), transparent);
+  animation: streakDrift 2s linear infinite;
+}
+
+.lesson-motif--ice-sheen {
+  bottom: 25%;
+  left: 10%;
+  right: 10%;
+  height: 80px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+  border-radius: 50% 50% 0 0;
+}
+
+.lesson-motif--inertia-glow {
+  left: 18%;
+  top: 40%;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--scene-a) 25%, transparent), transparent 70%);
+  animation: motifPulse 4s ease-in-out infinite;
+}
+
+.lesson-motif--formula-glow {
+  right: 15%;
+  top: 25%;
+  font-size: 28px;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--scene-b) 50%, transparent);
+  letter-spacing: 0.05em;
+  opacity: 0.35;
+}
+
+.lesson-motif--formula-glow::before {
+  content: "F = ma";
+}
+
+.lesson-motif--light-cart {
+  left: 22%;
+  top: 50%;
+  width: 50px;
+  height: 30px;
+  border: 2px solid var(--scene-a);
+  border-radius: 6px;
+  animation: cartAccel 2s ease-in-out infinite;
+}
+
+.lesson-motif--heavy-cart {
+  right: 22%;
+  top: 52%;
+  width: 70px;
+  height: 36px;
+  border: 2px solid var(--scene-b);
+  border-radius: 6px;
+  opacity: 0.25;
+}
+
+.lesson-motif--acceleration-streaks {
+  left: 30%;
+  top: 55%;
+  width: 160px;
+  height: 20px;
+  background: repeating-linear-gradient(90deg, var(--scene-a) 0 12px, transparent 12px 24px);
+  opacity: 0.2;
+  animation: streakDrift 1.5s linear infinite;
+}
+
+.lesson-motif--shopping-cart {
+  left: 20%;
+  top: 48%;
+  width: 44px;
+  height: 32px;
+  border: 2px solid var(--scene-a);
+  border-radius: 4px 4px 8px 8px;
+}
+
+.lesson-motif--brake-force {
+  right: 25%;
+  top: 40%;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(270deg, #f43f5e, transparent);
+}
+
+.lesson-motif--ball-arc {
+  right: 20%;
+  top: 30%;
+  width: 60px;
+  height: 60px;
+  border: 2px solid transparent;
+  border-top-color: var(--scene-a);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+}
+
+.lesson-motif--opposite-force {
+  left: 50%;
+  top: 55%;
+  width: 120px;
+  height: 4px;
+  margin-left: -60px;
+  background: linear-gradient(90deg, var(--scene-a), transparent 45%, transparent 55%, var(--scene-b));
+}
+
+@keyframes motifFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes motifPulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.25; }
+  50% { transform: scale(1.05); opacity: 0.45; }
+}
+
+@keyframes streakDrift {
+  from { transform: translateX(0); opacity: 0.2; }
+  to { transform: translateX(24px); opacity: 0.45; }
+}
+
+@keyframes cartAccel {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(16px); }
+}
+
+@keyframes gravityPull {
+  0%, 100% { transform: scaleY(0.92); opacity: 0.35; }
+  50% { transform: scaleY(1.05); opacity: 0.65; }
+}
+
+@keyframes metalFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes collisionBallLeft {
+  0%, 100% { transform: translateX(6px); }
+  45%, 55% { transform: translateX(14px); }
+}
+
+@keyframes collisionBallRight {
+  0%, 100% { transform: translateX(-6px); }
+  45%, 55% { transform: translateX(-14px); }
+}
+
+@keyframes collisionShock {
+  0%, 100% { transform: scale(0.6); opacity: 0; }
+  48%, 52% { transform: scale(1.35); opacity: 0.75; }
+  70% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Lesson content — center panel below concept chamber */
+.la-lesson-chamber .la-layout {
+  position: relative;
+  z-index: 2;
+  padding: 12px;
+}
+
+.la-lesson-chamber .la-card {
+  background: rgba(10, 14, 30, 0.78);
+  backdrop-filter: blur(16px) saturate(1.15);
+}
+
+.la-card--with-scene {
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-visual-scene {
+  --accent-cyan: #22d3ee;
+  --accent-purple: #8b5cf6;
+  --accent-magenta: #ec4899;
+  --accent-violet: #a78bfa;
+  --accent-teal: #2dd4bf;
+}

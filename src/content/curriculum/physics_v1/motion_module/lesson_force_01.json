@@ -1,0 +1,187 @@
+{
+  "id": "lesson.lesson_force_01",
+  "legacyLessonId": "lesson-1-force",
+  "title": "Lesson 1: What is Force",
+  "explanation": "Force is not a thing you see directly. It is inferred from change in motion. Imagine a bowling ball at rest. When a hand pushes it and it moves, that invisible interaction is force: a push or pull that changes motion.",
+  "visualKeywords": [
+    "bowling ball",
+    "push",
+    "motion change",
+    "interaction"
+  ],
+  "conceptTags": [
+    "force",
+    "motion",
+    "interaction"
+  ],
+  "scene": {
+    "environment": "physics_chamber",
+    "backgroundScene": "force_motion",
+    "accentColors": ["cyan", "magenta"],
+    "persistentAnchor": {
+      "objectId": "bowling_ball",
+      "material": "obsidian_gloss",
+      "fingerHoles": { "count": 3, "layout": "standard_grip" },
+      "lighting": { "rim": true, "specular": "sharp", "bloom": "controlled" },
+      "persistencePolicy": "immutable_core_layer"
+    },
+    "dynamicOverlayPolicy": "overlays_only",
+    "defaultMotifs": ["motion-lines", "force-arrows", "interaction-pulse"],
+    "visualScene": {
+      "focusObject": "bowling_ball",
+      "motionType": "push",
+      "effectOverlay": "force_arrows",
+      "animationStyle": "slow_pulse"
+    }
+  },
+  "phases": [
+    { "phase": "understanding", "questionIds": ["q1", "q2", "q-tf-1"] },
+    { "phase": "application", "questionIds": ["q3", "q-tf-2", "q-num-1"] },
+    { "phase": "mastery", "questionIds": ["q4", "q-num-2", "q-tf-3"] }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "phase": "understanding",
+      "questionType": "MCQ",
+      "prompt": "What best describes a force?",
+      "options": ["A type of energy", "A push or pull", "A measurement of time", "A form of matter"],
+      "correctIndex": 1,
+      "explanation": "Force is an interaction described as a push or pull.",
+      "visualTag": "push_force",
+      "conceptTags": ["force"]
+    },
+    {
+      "id": "q2",
+      "phase": "understanding",
+      "questionType": "MCQ",
+      "prompt": "What indicates a force is acting?",
+      "options": ["Color change", "Change in motion", "Temperature increase", "Sound emission"],
+      "correctIndex": 1,
+      "explanation": "We infer force when motion changes.",
+      "visualTag": "motion_change",
+      "conceptTags": ["motion"]
+    },
+    {
+      "id": "q-tf-1",
+      "phase": "understanding",
+      "questionType": "TRUE_FALSE",
+      "prompt": "You can see force directly, like seeing color on an object.",
+      "correctAnswer": false,
+      "explanation": "Force is inferred from interaction outcomes, not observed directly.",
+      "conceptTags": ["force"]
+    },
+    {
+      "id": "q3",
+      "phase": "application",
+      "questionType": "MCQ",
+      "prompt": "Which is the best real-world example of force?",
+      "options": [
+        "A parked car staying still",
+        "A book sitting on a table",
+        "Kicking a soccer ball",
+        "A shadow on the wall"
+      ],
+      "correctIndex": 2,
+      "explanation": "Kicking transfers force through contact.",
+      "visualTag": "contact_kick",
+      "conceptTags": ["interaction"]
+    },
+    {
+      "id": "q-tf-2",
+      "phase": "application",
+      "questionType": "TRUE_FALSE",
+      "prompt": "A push on a bowling ball can change how fast it moves.",
+      "correctAnswer": true,
+      "explanation": "Force changes motion — speed or direction.",
+      "conceptTags": ["motion"]
+    },
+    {
+      "id": "q-num-1",
+      "phase": "application",
+      "questionType": "NUMERIC_INPUT",
+      "prompt": "A 4 kg object accelerates at 2 m/s². Find the force (F = ma).",
+      "correctValue": 8,
+      "unit": "N",
+      "tolerance": 0.5,
+      "explanation": "F = ma = 4 × 2 = 8 N.",
+      "conceptTags": ["force", "motion"]
+    },
+    {
+      "id": "q4",
+      "phase": "mastery",
+      "questionType": "MCQ",
+      "prompt": "Force is best understood as:",
+      "options": [
+        "Something that exists even if nothing changes",
+        "Something inferred from interaction",
+        "A property of light",
+        "A fixed object property"
+      ],
+      "correctIndex": 1,
+      "explanation": "Force is inferred from interaction outcomes, not seen directly.",
+      "visualTag": "inference",
+      "conceptTags": ["force", "interaction"]
+    },
+    {
+      "id": "q-num-2",
+      "phase": "mastery",
+      "questionType": "NUMERIC_INPUT",
+      "prompt": "A 10 N force acts on a 5 kg mass. What is acceleration (m/s²)?",
+      "correctValue": 2,
+      "unit": "m/s²",
+      "tolerance": 0.1,
+      "explanation": "a = F/m = 10/5 = 2 m/s².",
+      "conceptTags": ["force", "motion"]
+    },
+    {
+      "id": "q-tf-3",
+      "phase": "mastery",
+      "questionType": "TRUE_FALSE",
+      "prompt": "If net force on an object is zero, its velocity must be zero.",
+      "correctAnswer": false,
+      "explanation": "Zero net force means constant velocity — which can be zero or non-zero.",
+      "conceptTags": ["force", "motion"]
+    }
+  ],
+  "curiosityNodes": [
+    {
+      "id": "curiosity-force-why-invisible",
+      "trigger": "why",
+      "prompt": "Why can't we see force directly?",
+      "expansion": "Force is invisible because it is a model for interaction. We only observe its signature: acceleration, deformation, or change in motion — like the bowling ball starting to roll.",
+      "staysInLesson": true,
+      "overlayEffect": "force_arrows"
+    },
+    {
+      "id": "curiosity-force-what-if-no-push",
+      "trigger": "what_if",
+      "prompt": "What if nothing pushes the bowling ball?",
+      "expansion": "Without a net external interaction, the ball keeps its current state. No push means no change from rest; no opposing force means motion does not stop by itself in an ideal case.",
+      "staysInLesson": true,
+      "overlayEffect": "motion_lines"
+    },
+    {
+      "id": "curiosity-force-how-change",
+      "trigger": "how_change",
+      "prompt": "How does a harder push change the scene?",
+      "expansion": "A stronger push increases acceleration — motion lines lengthen, force arrows intensify, but the bowling ball anchor stays the same object in the chamber.",
+      "staysInLesson": true,
+      "overlayEffect": "interaction_pulse"
+    }
+  ],
+  "masteryRules": {
+    "passThreshold": 3,
+    "retryBehavior": "adaptive_unseen_first",
+    "memoryKey": "physics.motion.lesson_force_01"
+  },
+  "memoryHooks": {
+    "conceptMasteryKey": "physics.concept.force",
+    "questionHistoryKey": "physics.motion.lesson_force_01.questions",
+    "confusionMapKey": "physics.concept.force.confusion"
+  },
+  "reinforcementFeedback": {
+    "correct": "Great read. You recognized force as an interaction causing motion change.",
+    "incorrect": "Re-focus on the core model: force is inferred from changes in motion, not observed directly."
+  }
+}
