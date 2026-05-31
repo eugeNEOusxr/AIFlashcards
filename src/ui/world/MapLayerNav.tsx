@@ -8,25 +8,44 @@ type Props = {
   moodLabel?: string;
 };
 
-/** In-field layer navigation — stays over the scroll map / lesson chamber. */
+function parentScreen(screen: NavScreen): NavScreen | null {
+  if (screen.kind === "SUBJECT") return { kind: "HOME" };
+  if (screen.kind === "FRAME_MODULE" || screen.kind === "LESSON") {
+    return { kind: "SUBJECT", subjectId: screen.subjectId };
+  }
+  return null;
+}
+
+function parentBackLabel(screen: NavScreen): string | null {
+  if (screen.kind === "SUBJECT") return "← Worlds";
+  if (screen.kind === "FRAME_MODULE" || screen.kind === "LESSON") return "← Map";
+  return null;
+}
+
+/** In-field layer navigation — back buttons + breadcrumb trail. */
 export function MapLayerNav({ screen, onNavigate, onJumpToCurrent, moodLabel }: Props) {
-  const onWorlds = () => onNavigate({ kind: "HOME" });
-  const onMap =
-    screen.kind === "LESSON"
-      ? () => onNavigate({ kind: "SUBJECT", subjectId: screen.subjectId })
-      : screen.kind === "SUBJECT"
-        ? undefined
-        : undefined;
+  const parent = parentScreen(screen);
+  const parentLabel = parentBackLabel(screen);
 
   return (
     <div className="map-layer-nav" role="navigation" aria-label="Layer navigation">
       <div className="map-layer-nav__actions">
-        <button type="button" className="map-layer-nav__back" onClick={onWorlds}>
-          ← Worlds
-        </button>
-        {onMap ? (
-          <button type="button" className="map-layer-nav__back map-layer-nav__back--secondary" onClick={onMap}>
-            ← Study path
+        {parent && parentLabel ? (
+          <button
+            type="button"
+            className="map-layer-nav__back"
+            onClick={() => onNavigate(parent)}
+          >
+            {parentLabel}
+          </button>
+        ) : null}
+        {screen.kind === "FRAME_MODULE" || screen.kind === "LESSON" ? (
+          <button
+            type="button"
+            className="map-layer-nav__back map-layer-nav__back--secondary"
+            onClick={() => onNavigate({ kind: "HOME" })}
+          >
+            ← Worlds
           </button>
         ) : null}
         {onJumpToCurrent ? (

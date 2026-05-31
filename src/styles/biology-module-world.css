@@ -658,7 +658,12 @@
 }
 
 .la-app--map-hero > .la-header {
-  display: none;
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 12px;
+  border-bottom: 1px solid rgba(121, 146, 224, 0.18);
+  background: rgba(7, 10, 18, 0.94);
 }
 
 .la-app--map-hero > .fx-ambient {

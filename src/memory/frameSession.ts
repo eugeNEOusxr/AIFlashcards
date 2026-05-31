@@ -19,9 +19,25 @@ export function saveFrameNav(nav: NavScreen): void {
   localStorage.setItem(NAV_KEY, JSON.stringify(nav));
 }
 
-/** Always open at Study Worlds — subjects are choices; map/lesson progress is stored separately. */
 export function loadFrameNav(): NavScreen {
-  return { kind: "HOME" };
+  try {
+    const raw = localStorage.getItem(NAV_KEY);
+    if (!raw) return { kind: "HOME" };
+    const nav = JSON.parse(raw) as NavScreen;
+    if (nav.kind === "FRAME_MODULE") {
+      if (getModule(nav.moduleId)) return nav;
+      return { kind: "SUBJECT", subjectId: nav.subjectId ?? "physics" };
+    }
+    if (nav.kind === "SUBJECT" || nav.kind === "HOME") {
+      return nav;
+    }
+    if (nav.kind === "LESSON" || nav.kind === "PATHWAY") {
+      return { kind: "SUBJECT", subjectId: nav.subjectId };
+    }
+    return { kind: "HOME" };
+  } catch {
+    return { kind: "HOME" };
+  }
 }
 
 export function saveFrameSession(session: PersistedFrameSession): void {

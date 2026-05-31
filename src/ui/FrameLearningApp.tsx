@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useAppNavEffects } from "../hooks/useAppNavEffects";
 import { useCompactTouchUI } from "../hooks/useCompactTouchUI";
 import { AmbientBackground } from "../effects/AmbientBackground";
 import { useFrameLearning } from "../engine/useFrameLearning";
@@ -62,10 +61,15 @@ function FrameModuleScreen({
   onReturnToMap,
 }: FrameModuleScreenProps) {
   const registered = getModule(nav.moduleId);
+  const layerNav = (
+    <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel={module?.title ?? "Lesson"} />
+  );
 
   if (!registered) {
     return (
-      <div className="la-frame-shell la-frame-shell__complete neural-glass">
+      <section className="la-lesson-shell la-lesson-shell--frames">
+        {layerNav}
+        <div className="la-frame-shell la-frame-shell__complete neural-glass">
         <h2>Module unavailable</h2>
         <p className="la-note">This frame module is not registered. Return to the map.</p>
         <button
@@ -75,29 +79,38 @@ function FrameModuleScreen({
         >
           Back to map
         </button>
-      </div>
+        </div>
+      </section>
     );
   }
 
   if (!session || !module) {
     return (
-      <div className="la-frame-shell la-frame-shell__loading neural-glass">
-        <p className="la-note">Loading frames…</p>
-      </div>
+      <section className="la-lesson-shell la-lesson-shell--frames">
+        {layerNav}
+        <div className="la-frame-shell la-frame-shell__loading neural-glass">
+          <p className="la-note">Loading frames…</p>
+        </div>
+      </section>
     );
   }
 
   if (!frame && !finished) {
     return (
-      <div className="la-frame-shell la-frame-shell__loading neural-glass">
-        <p className="la-note">Preparing frame…</p>
-      </div>
+      <section className="la-lesson-shell la-lesson-shell--frames">
+        {layerNav}
+        <div className="la-frame-shell la-frame-shell__loading neural-glass">
+          <p className="la-note">Preparing frame…</p>
+        </div>
+      </section>
     );
   }
 
   if (!frame && finished) {
     return (
-      <div className="la-frame-shell la-frame-shell__complete neural-glass">
+      <section className="la-lesson-shell la-lesson-shell--frames">
+        {layerNav}
+        <div className="la-frame-shell la-frame-shell__complete neural-glass">
         <h2>Module complete</h2>
         <p className="la-note">
           You finished all {frameTotal} frames in {module.title}.
@@ -105,7 +118,8 @@ function FrameModuleScreen({
         <button type="button" className="la-primary" onClick={onReturnToMap}>
           Return to map
         </button>
-      </div>
+        </div>
+      </section>
     );
   }
 
@@ -113,7 +127,7 @@ function FrameModuleScreen({
 
   const shell = (
     <>
-      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel={module.title} />
+      {layerNav}
       <div className="la-frame-shell">
         <CognitiveFrameCard
           key={frame.id}
@@ -189,7 +203,6 @@ function subjectFromNav(nav: NavScreen): import("../world/types").SubjectId {
 export function FrameLearningApp() {
   const [nav, setNav] = useState<NavScreen>(() => loadFrameNav());
   const compactTouch = useCompactTouchUI();
-  useAppNavEffects(nav);
   const activeSubject = subjectFromNav(nav);
   const model = useFrameLearning(activeSubject);
   const {
