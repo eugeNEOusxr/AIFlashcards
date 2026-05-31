@@ -1,7 +1,9 @@
 import { memo } from "react";
+import { getQuestionBankStats } from "../../content/curriculum/questionBank";
 import type { SubjectId } from "../../world/types";
 import { SubjectTileVisual } from "../../components/subject-tiles/SubjectTileVisual";
 import { useSubjectTileParallax } from "../../components/subject-tiles/useSubjectTileParallax";
+import { CognitiveMindBadge } from "./CognitiveMindBadge";
 
 export type SubjectEntitySlot = {
   left: string;
@@ -32,6 +34,10 @@ function SubjectWorldEntityInner({
   onEnter,
 }: Props) {
   const { ref, setVisualRef, onPointerMove, onPointerLeave } = useSubjectTileParallax(available);
+  const questionBank =
+    available && (subjectId === "physics" || subjectId === "chemistry")
+      ? getQuestionBankStats(subjectId)
+      : null;
 
   return (
     <div
@@ -67,6 +73,12 @@ function SubjectWorldEntityInner({
         <span ref={setVisualRef} className="world-entity__visual">
           <SubjectTileVisual subjectId={subjectId} />
         </span>
+
+        {questionBank ? (
+          <span className="world-entity__mind-badge">
+            <CognitiveMindBadge stats={questionBank} size="sm" />
+          </span>
+        ) : null}
 
         <span className="world-entity__label-wrap">
           <span className="world-entity__label">{label}</span>

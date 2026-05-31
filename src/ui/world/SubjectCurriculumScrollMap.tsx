@@ -18,7 +18,7 @@ type Props = {
 };
 
 /**
- * Subject internal progression map — frame modules only.
+ * Subject cognitive mind map — frame modules only.
  */
 export function SubjectCurriculumScrollMap(props: Props) {
   if (props.subjectId === "biology") {

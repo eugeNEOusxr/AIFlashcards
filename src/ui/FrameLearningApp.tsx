@@ -161,7 +161,7 @@ function headerForNav(nav: NavScreen): { kicker: string; title: string; subline:
     case "SUBJECT": {
       const profile = getSubjectProfile(nav.subjectId);
       return {
-        kicker: profile.mapRegionKicker,
+        kicker: profile.cognitiveMindKicker,
         title: profile.mapRegionTitle,
         subline: profile.homeTagline,
       };

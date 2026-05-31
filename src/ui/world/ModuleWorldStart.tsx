@@ -1,4 +1,4 @@
-import { memo, type CSSProperties } from "react";
+import { memo, type CSSProperties, type ReactNode } from "react";
 
 type Props = {
   accent: string;
@@ -7,10 +7,19 @@ type Props = {
   title: string;
   subtitle: string;
   ariaLabel: string;
+  mindBadge?: ReactNode;
 };
 
 /** Backbone entrance orb — copy comes from subject profile (Physics vs Chemistry). */
-function ModuleWorldStartInner({ accent, accentSecondary, kicker, title, subtitle, ariaLabel }: Props) {
+function ModuleWorldStartInner({
+  accent,
+  accentSecondary,
+  kicker,
+  title,
+  subtitle,
+  ariaLabel,
+  mindBadge,
+}: Props) {
   return (
     <div
       className="module-world-start"
@@ -30,6 +39,7 @@ function ModuleWorldStartInner({ accent, accentSecondary, kicker, title, subtitl
         <span className="module-world-start__sub">{subtitle}</span>
       </span>
       <span className="module-world-start__beacon" aria-hidden />
+      {mindBadge ? <span className="module-world-start__mind-badge">{mindBadge}</span> : null}
     </div>
   );
 }

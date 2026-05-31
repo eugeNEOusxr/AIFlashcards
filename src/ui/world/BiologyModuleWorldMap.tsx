@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, type CSSProperties } from "rea
 import type { FrameMapModel } from "../../engine/frameMapModel";
 import { getModuleForLandmark } from "../../content/frames/registry";
 import { completedFrameCount } from "../../memory/frameProgress";
+import { getQuestionBankStats } from "../../content/curriculum/questionBank";
 import { getSubjectProfile } from "../../world/subjectProfiles";
+import { CognitiveMindBadge } from "./CognitiveMindBadge";
 import { SubjectReviewSidebar } from "./SubjectReviewSidebar";
 import { resolveEducationalTier } from "../../cognitive/tierResolver";
 import { getPathwayBiome } from "../../world/pathwayBiomes";
@@ -77,6 +79,7 @@ export function BiologyModuleWorldMap({
   onEnterLandmark,
 }: Props) {
   const profile = getSubjectProfile("biology");
+  const questionBank = getQuestionBankStats("biology");
   const compactTouch = useCompactTouchUI();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -245,7 +248,7 @@ export function BiologyModuleWorldMap({
 
   return (
     <div className="biology-module-world">
-      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Knowledge universe" />
+      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Cognitive mind" />
 
       <div className="biology-module-world__body">
         <div ref={scrollRef} className="biology-module-world__scroll">
@@ -294,10 +297,13 @@ export function BiologyModuleWorldMap({
                 <ModuleWorldStart
                   accent={startBiome.accent}
                   accentSecondary={startBiome.accentSecondary}
-                  kicker={profile.startOrb.kicker}
+                  kicker={profile.cognitiveMindKicker}
                   title={profile.startOrb.title}
                   subtitle={profile.startOrb.subtitle}
                   ariaLabel={profile.startOrb.ariaLabel}
+                  mindBadge={
+                    questionBank ? <CognitiveMindBadge stats={questionBank} size="sm" /> : undefined
+                  }
                 />
               </div>
             </div>

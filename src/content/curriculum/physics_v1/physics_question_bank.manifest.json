@@ -1,0 +1,62 @@
+{
+  "id": "physics.question_bank.v1",
+  "label": "Physics cognitive mind — full book question plan",
+  "visionTarget": 10000,
+  "bookTarget": 500,
+  "notes": "Live frames ship first; legacy lessons and JSON banks fill toward bookTarget; visionTarget is the long-range adaptive pool.",
+  "chapters": [
+    {
+      "chapterId": 1,
+      "chapterKey": "physics.ch1",
+      "title": "Forces & Motion",
+      "pathwayId": "motion-forces",
+      "targetQuestions": 100,
+      "landmarks": ["motion", "forces"],
+      "liveFrameModuleIds": ["physics.force", "physics.forces"]
+    },
+    {
+      "chapterId": 2,
+      "chapterKey": "physics.ch2",
+      "title": "Energy",
+      "pathwayId": "energy",
+      "targetQuestions": 100,
+      "landmarks": ["energy"],
+      "liveFrameModuleIds": []
+    },
+    {
+      "chapterId": 3,
+      "chapterKey": "physics.ch3",
+      "title": "Electricity",
+      "pathwayId": "electricity",
+      "targetQuestions": 100,
+      "landmarks": ["electricity"],
+      "liveFrameModuleIds": []
+    },
+    {
+      "chapterId": 4,
+      "chapterKey": "physics.ch4",
+      "title": "Waves",
+      "pathwayId": "waves",
+      "targetQuestions": 100,
+      "landmarks": ["waves"],
+      "liveFrameModuleIds": []
+    },
+    {
+      "chapterId": 5,
+      "chapterKey": "physics.ch5",
+      "title": "Thermal Physics",
+      "pathwayId": "thermodynamics",
+      "targetQuestions": 100,
+      "landmarks": [],
+      "liveFrameModuleIds": []
+    }
+  ],
+  "matterMind": {
+    "subjectId": "chemistry",
+    "landmarkId": "matter",
+    "moduleId": "chemistry.matter",
+    "bookTarget": 100,
+    "visionTarget": 10000,
+    "note": "Matter landmark — same cognitive-mind question mark pattern as physics"
+  }
+}

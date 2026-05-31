@@ -3,7 +3,9 @@ import type { FrameMapModel } from "../../engine/frameMapModel";
 import { getModuleForLandmark } from "../../content/frames/registry";
 import type { SubjectId } from "../../world/types";
 import { completedFrameCount } from "../../memory/frameProgress";
+import { getQuestionBankStats } from "../../content/curriculum/questionBank";
 import { getSubjectProfile } from "../../world/subjectProfiles";
+import { CognitiveMindBadge } from "./CognitiveMindBadge";
 import { SubjectReviewSidebar } from "./SubjectReviewSidebar";
 import { resolveEducationalTier } from "../../cognitive/tierResolver";
 import { getPathwayBiome } from "../../world/pathwayBiomes";
@@ -80,6 +82,7 @@ export function ChemistryModuleWorldMap({
   onEnterLandmark,
 }: Props) {
   const profile = getSubjectProfile("chemistry");
+  const questionBank = getQuestionBankStats("chemistry");
   const compactTouch = useCompactTouchUI();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -248,7 +251,7 @@ export function ChemistryModuleWorldMap({
 
   return (
     <div className="chemistry-module-world">
-      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Knowledge universe" />
+      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Cognitive mind" />
 
       <div className="chemistry-module-world__body">
         <div ref={scrollRef} className="chemistry-module-world__scroll">
@@ -271,10 +274,11 @@ export function ChemistryModuleWorldMap({
             envClassPrefix={profile.envClassPrefix}
           />
 
-          <div className="chemistry-module-world__region-label">
-            <span className="chemistry-module-world__region-kicker">{profile.mapRegionKicker}</span>
-            <span className="chemistry-module-world__region-title">{profile.mapRegionTitle}</span>
-          </div>
+            <div className="chemistry-module-world__region-label">
+              <span className="chemistry-module-world__region-kicker">{profile.cognitiveMindKicker}</span>
+              <span className="chemistry-module-world__region-title">{profile.mapRegionTitle}</span>
+              {questionBank ? <CognitiveMindBadge stats={questionBank} size="sm" /> : null}
+            </div>
 
           <ModuleTunnelProgression
             mapWidth={mapWidth}
@@ -297,10 +301,13 @@ export function ChemistryModuleWorldMap({
               <ModuleWorldStart
                 accent={startBiome.accent}
                 accentSecondary={startBiome.accentSecondary}
-                kicker={profile.startOrb.kicker}
+                kicker={profile.cognitiveMindKicker}
                 title={profile.startOrb.title}
-                subtitle={profile.startOrb.subtitle}
+                subtitle="Matter & change · nature mind"
                 ariaLabel={profile.startOrb.ariaLabel}
+                mindBadge={
+                  questionBank ? <CognitiveMindBadge stats={questionBank} size="sm" /> : undefined
+                }
               />
             </div>
           </div>

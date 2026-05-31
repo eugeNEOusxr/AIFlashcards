@@ -72,7 +72,7 @@ export function SubjectWorldScreen({ onEnterSubject, onNavigate }: Props) {
           <p className="subject-world__kicker">Knowledge space</p>
           <h2 className="subject-world__title">Choose your atmospheric zone</h2>
           <p className="subject-world__lead">
-            Hover a zone to feel its field — enter to open the progression map and lessons.
+            Hover a zone to feel its field — enter the cognitive mind map and lessons.
           </p>
         </header>
 

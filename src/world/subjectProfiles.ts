@@ -8,6 +8,8 @@ export type SubjectProfile = {
   /** Map header */
   mapRegionKicker: string;
   mapRegionTitle: string;
+  /** Map header brand — "Cognitive mind" */
+  cognitiveMindKicker: string;
   defaultPathwayId: PathwayId;
   /** Backbone start orb copy */
   startOrb: {
@@ -31,8 +33,9 @@ const PHYSICS_PROFILE: SubjectProfile = {
   id: "physics",
   label: "Physics",
   homeTagline: "Motion · forces · energy flow",
-  mapRegionKicker: "Forces & motion world",
+  mapRegionKicker: "Cognitive mind",
   mapRegionTitle: "Physics",
+  cognitiveMindKicker: "Cognitive mind",
   defaultPathwayId: "motion-forces",
   startOrb: {
     kicker: "Entrance",
@@ -54,8 +57,9 @@ const CHEMISTRY_PROFILE: SubjectProfile = {
   id: "chemistry",
   label: "Chemistry",
   homeTagline: "Matter · change · nature outdoors",
-  mapRegionKicker: "Nature chemistry world",
-  mapRegionTitle: "Chemistry",
+  mapRegionKicker: "Cognitive mind",
+  mapRegionTitle: "Chemistry · Matter",
+  cognitiveMindKicker: "Cognitive mind",
   defaultPathwayId: "nature-chemistry",
   startOrb: {
     kicker: "Entrance",
@@ -77,8 +81,9 @@ const BIOLOGY_PROFILE: SubjectProfile = {
   id: "biology",
   label: "Biology",
   homeTagline: "Cells · organisms · life outdoors",
-  mapRegionKicker: "Living world",
+  mapRegionKicker: "Cognitive mind",
   mapRegionTitle: "Biology",
+  cognitiveMindKicker: "Cognitive mind",
   defaultPathwayId: "living-biology",
   startOrb: {
     kicker: "Entrance",
@@ -110,7 +115,9 @@ export function getSubjectProfile(subjectId: SubjectId): SubjectProfile {
       id: subjectId,
       label: subjectId,
       homeTagline: "Coming soon",
+      mapRegionKicker: "Cognitive mind",
       mapRegionTitle: subjectId,
+      cognitiveMindKicker: "Cognitive mind",
       startOrb: {
         kicker: "Entrance",
         title: subjectId,

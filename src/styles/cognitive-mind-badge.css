@@ -1,0 +1,83 @@
+.cognitive-mind-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 182, 255, 0.35);
+  background: rgba(8, 14, 32, 0.72);
+  color: #c8d8ff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+.cognitive-mind-badge--sm {
+  gap: 6px;
+  padding: 4px 8px 4px 6px;
+  font-size: 0.65rem;
+}
+
+.cognitive-mind-badge__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35em;
+  height: 1.35em;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(34, 211, 238, 0.35), rgba(139, 92, 246, 0.25));
+  color: #e8f4ff;
+  font-weight: 800;
+  font-size: 1.05em;
+}
+
+.cognitive-mind-badge__counts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+
+.cognitive-mind-badge__fraction {
+  color: #e0f0ff;
+}
+
+.cognitive-mind-badge__vision {
+  font-size: 0.85em;
+  font-weight: 500;
+  color: rgba(148, 163, 184, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.physics-module-world__region-label .cognitive-mind-badge,
+.chemistry-module-world__region-label .cognitive-mind-badge,
+.biology-module-world__region-label .cognitive-mind-badge {
+  margin-top: 10px;
+}
+
+.world-entity__mind-badge {
+  position: absolute;
+  top: 8%;
+  right: 6%;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.module-world-start {
+  position: relative;
+}
+
+.module-world-start__mind-badge {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.world-entity__hit {
+  position: relative;
+}

@@ -49,7 +49,22 @@ Shared rules for all subjects: [`question-pacing.contract.json`](./question-paci
 
 Phases (`answering` → `reflection` → optional `clarification`) are fixed in code (`frameEngine.ts`, `frameDisplay.ts`); JSON does not skip phases.
 
-## 5. Biology example paths
+## 5. Physics question scale (committed plan)
+
+File: `physics_v1/physics_question_bank.manifest.json`
+
+| Scope | Target | Today (frame modules) |
+|--------|--------|------------------------|
+| Full physics book (5 chapters) | **500** questions | **9** live in Ch1 |
+| Long-range cognitive mind pool | **10,000** | fills over time |
+
+Per chapter (book plan): **~100 questions each** — Ch1 Forces & Motion through Ch5 Thermal.
+
+Chemistry **matter** uses the same mind badge pattern (100 toward book, 10k vision).
+
+You cannot load all 500 at once in the app until each `frameId` has a validated body in a module file (or JSON content loader). The badge shows **live / book** and **10k path** so progress is visible while content is added.
+
+## 6. Biology example paths
 
 - Manifest: `biology_v1/curriculum.manifest.json`
 - Pacing: `biology_v1/biology.frames.manifest.json`

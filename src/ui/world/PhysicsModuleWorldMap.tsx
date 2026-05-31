@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useRef, type CSSProperties } from "rea
 import type { FrameMapModel } from "../../engine/frameMapModel";
 import { getModuleForLandmark } from "../../content/frames/registry";
 import { completedFrameCount } from "../../memory/frameProgress";
+import { getQuestionBankStats } from "../../content/curriculum/questionBank";
 import { getSubjectProfile } from "../../world/subjectProfiles";
+import { CognitiveMindBadge } from "./CognitiveMindBadge";
 import { SubjectReviewSidebar } from "./SubjectReviewSidebar";
 import { resolveEducationalTier } from "../../cognitive/tierResolver";
 import { getPathwayBiome } from "../../world/pathwayBiomes";
@@ -79,6 +81,7 @@ export function PhysicsModuleWorldMap({
   onEnterLandmark,
 }: Props) {
   const profile = getSubjectProfile("physics");
+  const questionBank = getQuestionBankStats("physics");
   const compactTouch = useCompactTouchUI();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -245,7 +248,7 @@ export function PhysicsModuleWorldMap({
 
   return (
     <div className="physics-module-world">
-      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Knowledge universe" />
+      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel="Cognitive mind" />
 
       <div className="physics-module-world__body">
         <div ref={scrollRef} className="physics-module-world__scroll">
@@ -269,8 +272,9 @@ export function PhysicsModuleWorldMap({
           />
 
           <div className="physics-module-world__region-label">
-            <span className="physics-module-world__region-kicker">{profile.mapRegionKicker}</span>
+            <span className="physics-module-world__region-kicker">{profile.cognitiveMindKicker}</span>
             <span className="physics-module-world__region-title">{profile.mapRegionTitle}</span>
+            {questionBank ? <CognitiveMindBadge stats={questionBank} size="sm" /> : null}
           </div>
 
           <ModuleTunnelProgression
@@ -294,10 +298,13 @@ export function PhysicsModuleWorldMap({
               <ModuleWorldStart
                 accent={startBiome.accent}
                 accentSecondary={startBiome.accentSecondary}
-                kicker={profile.startOrb.kicker}
+                kicker={profile.cognitiveMindKicker}
                 title={profile.startOrb.title}
                 subtitle={profile.startOrb.subtitle}
                 ariaLabel={profile.startOrb.ariaLabel}
+                mindBadge={
+                  questionBank ? <CognitiveMindBadge stats={questionBank} size="sm" /> : undefined
+                }
               />
             </div>
           </div>
