@@ -7,6 +7,8 @@ type ScrollMotionOptions = {
   parallaxTransform?: (id: string, scrollTop: number) => string | null;
   /** Optional pointer vars: --pointer-x / --pointer-y (percent). */
   trackPointer?: boolean;
+  /** When false, only CSS scroll vars update (no landmark parallax / pointer). */
+  enabled?: boolean;
 };
 
 /**
@@ -39,16 +41,18 @@ export function useScrollMotionVars(
       target.style.setProperty("--scroll-parallax-region", `${-y * 0.12}px`);
       target.style.setProperty("--scroll-parallax-start", `${-y * 0.06}px`);
 
-      const { parallaxTargets, parallaxTransform } = optsRef.current;
-      const map = parallaxTargets?.current;
-      if (map && parallaxTransform) {
-        for (const [id, el] of map) {
-          const t = parallaxTransform(id, y);
-          if (t != null) el.style.transform = t;
+      if (optsRef.current.enabled !== false) {
+        const { parallaxTargets, parallaxTransform } = optsRef.current;
+        const map = parallaxTargets?.current;
+        if (map && parallaxTransform) {
+          for (const [id, el] of map) {
+            const t = parallaxTransform(id, y);
+            if (t != null) el.style.transform = t;
+          }
         }
       }
 
-      if (optsRef.current.trackPointer) {
+      if (optsRef.current.enabled !== false && optsRef.current.trackPointer) {
         const { x, y: py } = pointerRef.current;
         target.style.setProperty("--pointer-x", `${x}%`);
         target.style.setProperty("--pointer-y", `${py}%`);
@@ -79,16 +83,22 @@ export function useScrollMotionVars(
     schedule();
 
     root.addEventListener("scroll", onScroll, { passive: true });
-    if (options.trackPointer) {
+    if (options.enabled !== false && options.trackPointer) {
       root.addEventListener("pointermove", onPointer, { passive: true });
     }
 
     return () => {
       root.removeEventListener("scroll", onScroll);
-      if (options.trackPointer) {
+      if (options.enabled !== false && options.trackPointer) {
         root.removeEventListener("pointermove", onPointer);
       }
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      const map = optsRef.current.parallaxTargets?.current;
+      if (map) {
+        for (const el of map.values()) {
+          el.style.transform = "";
+        }
+      }
     };
-  }, [scrollRef, targetRef, options.trackPointer]);
+  }, [scrollRef, targetRef, options.trackPointer, options.enabled]);
 }

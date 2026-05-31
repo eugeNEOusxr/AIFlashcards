@@ -24,6 +24,7 @@ import {
 } from "../../world/biologyModuleLandmarks";
 import { tunnelPathD } from "../../world/serpentineLayout";
 import { progressionFlowPalette, progressionPaletteStyle } from "../../world/tunnelProgressionPalette";
+import { useCompactTouchUI } from "../../hooks/useCompactTouchUI";
 import { useScrollMotionVars } from "../../hooks/useScrollMotionVars";
 import type { TunnelSegmentState } from "./ModuleTunnelProgression";
 import type { NavScreen } from "../../world/types";
@@ -76,6 +77,7 @@ export function BiologyModuleWorldMap({
   onEnterLandmark,
 }: Props) {
   const profile = getSubjectProfile("biology");
+  const compactTouch = useCompactTouchUI();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
@@ -208,9 +210,10 @@ export function BiologyModuleWorldMap({
   }, []);
 
   useScrollMotionVars(scrollRef, canvasRef, {
+    enabled: !compactTouch,
     parallaxTargets: parallaxMapRef,
     parallaxTransform,
-    trackPointer: true,
+    trackPointer: !compactTouch,
   });
 
   const setParallaxRef = useCallback(
@@ -226,8 +229,8 @@ export function BiologyModuleWorldMap({
     const root = scrollRef.current;
     if (!el || !root) return;
     const top = el.offsetTop - root.clientHeight * 0.32;
-    root.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-  }, [activeId]);
+    root.scrollTo({ top: Math.max(0, top), behavior: compactTouch ? "instant" : "smooth" });
+  }, [activeId, compactTouch]);
 
   const startPos = biologyStartPixelPosition();
 

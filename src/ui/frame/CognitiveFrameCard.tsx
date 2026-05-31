@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 import type { BoundLearningFrame } from "../../content/curriculum/bindChapterHierarchy";
 import { layerLabel, levelLabel } from "../../content/curriculum/questionHierarchy";
 import { composeFrameDisplay } from "../../content/frames/frameDisplay";
@@ -22,6 +23,8 @@ type Props = {
   onReflectionYes: () => void;
   onReflectionConfused: () => void;
   onContinueAfterClarification: () => void;
+  /** Skip framer-motion on touch phones — avoids jank between questions. */
+  reduceMotion?: boolean;
 };
 
 export function CognitiveFrameCard({
@@ -36,20 +39,37 @@ export function CognitiveFrameCard({
   onReflectionYes,
   onReflectionConfused,
   onContinueAfterClarification,
+  reduceMotion = false,
 }: Props) {
   const display = composeFrameDisplay(frame, phase, selectedIndex, isCorrect);
   const trail = hierarchyTrail(frame);
+  const Shell = reduceMotion ? "article" : motion.article;
+  const shellProps = reduceMotion
+    ? { className: "cognitive-frame", "data-frame-id": frame.id, "data-phase": phase }
+    : {
+        className: "cognitive-frame",
+        "data-frame-id": frame.id,
+        "data-phase": phase,
+        initial: { opacity: 0, y: 10 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.2, ease: "easeOut" as const },
+      };
+
+  const fadeIn = (child: ReactNode) =>
+    reduceMotion ? (
+      child
+    ) : (
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2, delay: 0.05, ease: "easeOut" }}
+      >
+        {child}
+      </motion.div>
+    );
 
   return (
-    <motion.article
-      className="cognitive-frame"
-      data-frame-id={frame.id}
-      data-phase={phase}
-      key={frame.id}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-    >
+    <Shell {...shellProps}>
       <header className="cognitive-frame__head">
         <span className="cognitive-frame__module">{moduleTitle}</span>
         {trail ? (
@@ -135,59 +155,55 @@ export function CognitiveFrameCard({
           <span className="cognitive-frame__label">Feedback</span>
           <p className="cognitive-frame__feedback-text">{display.feedbackText}</p>
 
-          {display.showReflection ? (
-            <motion.div
-              className="cognitive-frame__reflection"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.32, delay: 0.08, ease: "easeOut" }}
-            >
-              <p className="cognitive-frame__reflection-prompt">Did this click?</p>
-              <div className="cognitive-frame__reflection-actions">
-                <button
-                  type="button"
-                  className="la-primary cognitive-frame__reflection-btn cognitive-frame__reflection-btn--yes"
-                  onClick={onReflectionYes}
-                >
-                  Yes
-                </button>
-                <button
-                  type="button"
-                  className="la-ghost cognitive-frame__reflection-btn cognitive-frame__reflection-btn--confused"
-                  onClick={onReflectionConfused}
-                >
-                  Still confused
-                </button>
-              </div>
-            </motion.div>
-          ) : null}
+          {display.showReflection
+            ? fadeIn(
+                <div className="cognitive-frame__reflection">
+                  <p className="cognitive-frame__reflection-prompt">Did this click?</p>
+                  <div className="cognitive-frame__reflection-actions">
+                    <button
+                      type="button"
+                      className="la-primary cognitive-frame__reflection-btn cognitive-frame__reflection-btn--yes"
+                      onClick={onReflectionYes}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      className="la-ghost cognitive-frame__reflection-btn cognitive-frame__reflection-btn--confused"
+                      onClick={onReflectionConfused}
+                    >
+                      Still confused
+                    </button>
+                  </div>
+                </div>
+              )
+            : null}
         </section>
       ) : null}
 
-      {display.showClarification ? (
-        <motion.section
-          className="cognitive-frame__clarification"
-          aria-labelledby={`clarify-${frame.id}`}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-        >
-          <span className="cognitive-frame__label" id={`clarify-${frame.id}`}>
-            Clarification
-          </span>
-          <p className="cognitive-frame__clarification-text">{frame.clarification.text}</p>
-          <p className="cognitive-frame__clarification-visual">{frame.clarification.visualAid}</p>
-          <div className="cognitive-frame__clarification-actions">
-            <button
-              type="button"
-              className="la-primary cognitive-frame__clarification-continue"
-              onClick={onContinueAfterClarification}
+      {display.showClarification
+        ? fadeIn(
+            <section
+              className="cognitive-frame__clarification"
+              aria-labelledby={`clarify-${frame.id}`}
             >
-              Continue
-            </button>
-          </div>
-        </motion.section>
-      ) : null}
-    </motion.article>
+              <span className="cognitive-frame__label" id={`clarify-${frame.id}`}>
+                Clarification
+              </span>
+              <p className="cognitive-frame__clarification-text">{frame.clarification.text}</p>
+              <p className="cognitive-frame__clarification-visual">{frame.clarification.visualAid}</p>
+              <div className="cognitive-frame__clarification-actions">
+                <button
+                  type="button"
+                  className="la-primary cognitive-frame__clarification-continue"
+                  onClick={onContinueAfterClarification}
+                >
+                  Continue
+                </button>
+              </div>
+            </section>
+          )
+        : null}
+    </Shell>
   );
 }

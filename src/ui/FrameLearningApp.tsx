@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { useAppNavEffects } from "../hooks/useAppNavEffects";
+import { useCompactTouchUI } from "../hooks/useCompactTouchUI";
 import { AmbientBackground } from "../effects/AmbientBackground";
 import { useFrameLearning } from "../engine/useFrameLearning";
 import { getModule, getModuleForLandmark } from "../content/frames/registry";
@@ -14,6 +16,139 @@ import { getSubjectProfile } from "../world/subjectProfiles";
 import type { BiologyModuleLandmarkId } from "../world/biologyModuleLandmarks";
 import type { ChemistryModuleLandmarkId } from "../world/chemistryModuleLandmarks";
 import type { PhysicsModuleLandmarkId } from "../world/physicsModuleLandmarks";
+import type { FrameSessionState } from "../engine/frameEngine";
+import type { FramePhase, LearningFrame, LearningModule } from "../content/frames/types";
+import type { SubjectId } from "../world/types";
+
+type FrameModuleScreenProps = {
+  nav: Extract<NavScreen, { kind: "FRAME_MODULE" }>;
+  compactTouch: boolean;
+  activeSubject: SubjectId;
+  session: FrameSessionState | null;
+  module: LearningModule | null;
+  frame: LearningFrame | null;
+  finished: boolean;
+  frameIndex: number;
+  frameTotal: number;
+  phase: FramePhase;
+  selectedIndex: number | null;
+  isCorrect: boolean | null;
+  selectAnswer: (index: number) => void;
+  onReflectionYes: () => void;
+  onReflectionConfused: () => void;
+  onContinueAfterClarification: () => void;
+  onNavigate: (screen: NavScreen) => void;
+  onReturnToMap: () => void;
+};
+
+function FrameModuleScreen({
+  nav,
+  compactTouch,
+  activeSubject,
+  session,
+  module,
+  frame,
+  finished,
+  frameIndex,
+  frameTotal,
+  phase,
+  selectedIndex,
+  isCorrect,
+  selectAnswer,
+  onReflectionYes,
+  onReflectionConfused,
+  onContinueAfterClarification,
+  onNavigate,
+  onReturnToMap,
+}: FrameModuleScreenProps) {
+  const registered = getModule(nav.moduleId);
+
+  if (!registered) {
+    return (
+      <div className="la-frame-shell la-frame-shell__complete neural-glass">
+        <h2>Module unavailable</h2>
+        <p className="la-note">This frame module is not registered. Return to the map.</p>
+        <button
+          type="button"
+          className="la-primary"
+          onClick={() => onNavigate({ kind: "SUBJECT", subjectId: activeSubject })}
+        >
+          Back to map
+        </button>
+      </div>
+    );
+  }
+
+  if (!session || !module) {
+    return (
+      <div className="la-frame-shell la-frame-shell__loading neural-glass">
+        <p className="la-note">Loading frames…</p>
+      </div>
+    );
+  }
+
+  if (!frame && !finished) {
+    return (
+      <div className="la-frame-shell la-frame-shell__loading neural-glass">
+        <p className="la-note">Preparing frame…</p>
+      </div>
+    );
+  }
+
+  if (!frame && finished) {
+    return (
+      <div className="la-frame-shell la-frame-shell__complete neural-glass">
+        <h2>Module complete</h2>
+        <p className="la-note">
+          You finished all {frameTotal} frames in {module.title}.
+        </p>
+        <button type="button" className="la-primary" onClick={onReturnToMap}>
+          Return to map
+        </button>
+      </div>
+    );
+  }
+
+  if (!frame) return null;
+
+  const shell = (
+    <>
+      <MapLayerNav screen={nav} onNavigate={onNavigate} moodLabel={module.title} />
+      <div className="la-frame-shell">
+        <CognitiveFrameCard
+          key={frame.id}
+          frame={frame}
+          frameIndex={frameIndex}
+          frameTotal={frameTotal}
+          moduleTitle={module.title}
+          phase={phase}
+          selectedIndex={selectedIndex}
+          isCorrect={isCorrect}
+          reduceMotion={compactTouch}
+          onSelectAnswer={selectAnswer}
+          onReflectionYes={onReflectionYes}
+          onReflectionConfused={onReflectionConfused}
+          onContinueAfterClarification={onContinueAfterClarification}
+        />
+      </div>
+    </>
+  );
+
+  if (compactTouch) {
+    return <section className="la-lesson-shell la-lesson-shell--frames">{shell}</section>;
+  }
+
+  return (
+    <motion.section
+      className="la-lesson-shell la-lesson-shell--frames"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {shell}
+    </motion.section>
+  );
+}
 
 function headerForNav(nav: NavScreen): { kicker: string; title: string; subline: string } {
   switch (nav.kind) {
@@ -53,6 +188,8 @@ function subjectFromNav(nav: NavScreen): import("../world/types").SubjectId {
 
 export function FrameLearningApp() {
   const [nav, setNav] = useState<NavScreen>(() => loadFrameNav());
+  const compactTouch = useCompactTouchUI();
+  useAppNavEffects(nav);
   const activeSubject = subjectFromNav(nav);
   const model = useFrameLearning(activeSubject);
   const {
@@ -146,19 +283,33 @@ export function FrameLearningApp() {
         <p className="la-subline">{header.subline}</p>
       </header>
 
-      <AnimatePresence mode="wait">
+      <div className="la-screen-stack" data-nav={nav.kind}>
         {nav.kind === "HOME" ? (
-          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <SubjectWorldScreen
-              onEnterSubject={(subjectId) => setNav({ kind: "SUBJECT", subjectId })}
-              onNavigate={handleBreadcrumb}
-            />
-          </motion.div>
+          compactTouch ? (
+            <div key="home">
+              <SubjectWorldScreen
+                onEnterSubject={(subjectId) => setNav({ kind: "SUBJECT", subjectId })}
+                onNavigate={handleBreadcrumb}
+              />
+            </div>
+          ) : (
+            <motion.div
+              key="home"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SubjectWorldScreen
+                onEnterSubject={(subjectId) => setNav({ kind: "SUBJECT", subjectId })}
+                onNavigate={handleBreadcrumb}
+              />
+            </motion.div>
+          )
         ) : null}
 
         {nav.kind === "SUBJECT" ? (
           <SubjectCurriculumScrollMap
-            key="subject"
+            key={`subject-${nav.subjectId}`}
             subjectId={nav.subjectId}
             nav={nav}
             mapModel={mapModel}
@@ -167,79 +318,32 @@ export function FrameLearningApp() {
           />
         ) : null}
 
-        {nav.kind === "FRAME_MODULE" && session && module && frame ? (
-          <motion.section
-            key={`module-${module.id}`}
-            className="la-lesson-shell la-lesson-shell--frames"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <MapLayerNav screen={nav} onNavigate={handleBreadcrumb} moodLabel={module.title} />
-
-            <div className="la-frame-shell">
-              <CognitiveFrameCard
-                key={frame.id}
-                frame={frame}
-                frameIndex={frameIndex}
-                frameTotal={frameTotal}
-                moduleTitle={module.title}
-                phase={phase}
-                selectedIndex={selectedIndex}
-                isCorrect={isCorrect}
-                onSelectAnswer={selectAnswer}
-                onReflectionYes={handleReflectionYes}
-                onReflectionConfused={reflectionConfused}
-                onContinueAfterClarification={handleContinueAfterClarification}
-              />
-            </div>
-          </motion.section>
+        {nav.kind === "FRAME_MODULE" ? (
+          <FrameModuleScreen
+            nav={nav}
+            compactTouch={compactTouch}
+            activeSubject={activeSubject}
+            session={session}
+            module={module}
+            frame={frame}
+            finished={finished}
+            frameIndex={frameIndex}
+            frameTotal={frameTotal}
+            phase={phase}
+            selectedIndex={selectedIndex}
+            isCorrect={isCorrect}
+            selectAnswer={selectAnswer}
+            onReflectionYes={handleReflectionYes}
+            onReflectionConfused={reflectionConfused}
+            onContinueAfterClarification={handleContinueAfterClarification}
+            onNavigate={handleBreadcrumb}
+            onReturnToMap={() => {
+              completeModule();
+              setNav({ kind: "SUBJECT", subjectId: activeSubject });
+            }}
+          />
         ) : null}
-
-        {nav.kind === "FRAME_MODULE" && !getModule(nav.moduleId) ? (
-          <div className="la-frame-shell la-frame-shell__complete neural-glass">
-            <h2>Module unavailable</h2>
-            <p className="la-note">This frame module is not registered. Return to the map.</p>
-            <button
-              type="button"
-              className="la-primary"
-              onClick={() => setNav({ kind: "SUBJECT", subjectId: "physics" })}
-            >
-              Back to Physics map
-            </button>
-          </div>
-        ) : null}
-
-        {nav.kind === "FRAME_MODULE" &&
-        getModule(nav.moduleId) &&
-        (!session || !module) ? (
-          <div className="la-frame-shell la-frame-shell__loading neural-glass">
-            <p className="la-note">Loading frames…</p>
-          </div>
-        ) : null}
-
-        {nav.kind === "FRAME_MODULE" && session && module && !frame && !finished ? (
-          <div className="la-frame-shell la-frame-shell__loading neural-glass">
-            <p className="la-note">Preparing frame…</p>
-          </div>
-        ) : null}
-
-        {nav.kind === "FRAME_MODULE" && session && module && !frame && finished ? (
-          <div className="la-frame-shell la-frame-shell__complete neural-glass">
-            <h2>Module complete</h2>
-            <p className="la-note">You finished all {frameTotal} frames in {module.title}.</p>
-            <button
-              type="button"
-              className="la-primary"
-              onClick={() => {
-                completeModule();
-                setNav({ kind: "SUBJECT", subjectId: activeSubject });
-              }}
-            >
-              Return to map
-            </button>
-          </div>
-        ) : null}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

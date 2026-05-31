@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isCompactTouchUI } from "../../hooks/useCompactTouchUI";
 import {
   buildReviewDeckFromProgress,
   reshuffleReviewCard,
@@ -17,7 +18,7 @@ export function SubjectReviewSidebar({ subjectId, refreshKey }: Props) {
   const profile = getSubjectProfile(subjectId);
   const p = profile.reviewClassPrefix;
 
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(() => !isCompactTouchUI());
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [cards, setCards] = useState<ReviewFlashcard[]>(() =>

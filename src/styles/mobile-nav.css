@@ -1,0 +1,87 @@
+/* Phone / touch — stable scroll when switching home ↔ map ↔ lesson */
+
+.la-screen-stack {
+  position: relative;
+  z-index: 2;
+  min-height: 0;
+}
+
+html.la-scroll-lock,
+html.la-scroll-lock body {
+  overflow: hidden;
+  height: 100dvh;
+  height: 100svh;
+  overscroll-behavior: none;
+  position: relative;
+  width: 100%;
+}
+
+html.la-scroll-lock #root {
+  height: 100dvh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+html.la-scroll-lock .la-app--map-hero {
+  height: 100dvh;
+  height: 100svh;
+  min-height: 0;
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+  .physics-module-world__scroll,
+  .chemistry-module-world__scroll,
+  .biology-module-world__scroll {
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .physics-module-world__region-label,
+  .chemistry-module-world__region-label,
+  .biology-module-world__region-label {
+    transform: translate3d(-50%, 0, 0) !important;
+    will-change: auto;
+  }
+
+  .physics-module-world__start-shift,
+  .chemistry-module-world__start-shift,
+  .biology-module-world__start-shift,
+  .physics-module-world__landmark-shift,
+  .chemistry-module-world__landmark-shift,
+  .biology-module-world__landmark-shift {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .la-app--map-hero {
+    height: 100dvh;
+    height: 100svh;
+  }
+
+  .cognitive-frame__choice,
+  .la-primary,
+  .la-ghost,
+  .world-breadcrumb button,
+  .map-layer-nav button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .physics-module-world__scroll,
+  .chemistry-module-world__scroll,
+  .biology-module-world__scroll {
+    scroll-behavior: auto;
+  }
+
+  .la-app *,
+  .subject-world *,
+  .physics-module-world *,
+  .chemistry-module-world *,
+  .biology-module-world * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

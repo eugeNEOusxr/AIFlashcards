@@ -18,6 +18,7 @@ import "./styles/biology-module-world.css";
 import "./styles/module-tunnel-progression.css";
 import "./styles/curriculum-map-environment.css";
 import "./styles/cognitive-frame.css";
+import "./styles/mobile-nav.css";
 
 async function boot(): Promise<void> {
   if (import.meta.env.DEV && "serviceWorker" in navigator) {
