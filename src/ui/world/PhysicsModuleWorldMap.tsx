@@ -17,6 +17,7 @@ import {
   startToMotionTunnelD,
   landmarkTunnelEntry,
   landmarkTunnelExit,
+  motionToForcesTunnelEndpoints,
   type LandmarkSlot,
   type PhysicsModuleLandmarkId,
 } from "../../world/physicsModuleLandmarks";
@@ -158,8 +159,13 @@ export function PhysicsModuleWorldMap({
       const toId = LANDMARK_FLOW_ORDER[i + 1]!;
       const fromSlot = LANDMARK_SLOTS.find((s) => s.id === fromId)!;
       const toSlot = LANDMARK_SLOTS.find((s) => s.id === toId)!;
-      const fromPos = landmarkTunnelExit(fromSlot);
-      const toPos = landmarkTunnelEntry(toSlot);
+      const { from: fromPos, to: toPos } =
+        fromId === "motion" && toId === "forces"
+          ? motionToForcesTunnelEndpoints(fromSlot, toSlot)
+          : {
+              from: landmarkTunnelExit(fromSlot),
+              to: landmarkTunnelEntry(toSlot),
+            };
       segs.push({
         key: `${fromId}-${toId}`,
         d: tunnelPathD(

@@ -137,6 +137,12 @@ export function startTunnelExit(): { cx: number; cy: number } {
   return { cx: c.cx, cy: c.cy + START_ORB_ATTACH_R };
 }
 
+/** Tunnel attach at landmark map center (node anchor) */
+export function landmarkTunnelCenter(slot: LandmarkSlot): { cx: number; cy: number } {
+  const p = landmarkPixelPosition(slot);
+  return { cx: p.cx, cy: p.cy };
+}
+
 /** Tunnel enters the top edge of a landmark card */
 export function landmarkTunnelEntry(slot: LandmarkSlot): { cx: number; cy: number } {
   const p = landmarkPixelPosition(slot);
@@ -147,6 +153,17 @@ export function landmarkTunnelEntry(slot: LandmarkSlot): { cx: number; cy: numbe
 export function landmarkTunnelExit(slot: LandmarkSlot): { cx: number; cy: number } {
   const p = landmarkPixelPosition(slot);
   return { cx: p.cx, cy: p.cy + LANDMARK_ATTACH_HALF_H };
+}
+
+/** Motion → Forces uses center anchors on both landmarks */
+export function motionToForcesTunnelEndpoints(
+  motionSlot: LandmarkSlot,
+  forcesSlot: LandmarkSlot
+): { from: { cx: number; cy: number }; to: { cx: number; cy: number } } {
+  return {
+    from: landmarkTunnelCenter(motionSlot),
+    to: landmarkTunnelCenter(forcesSlot),
+  };
 }
 
 /**
