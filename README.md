@@ -1,6 +1,12 @@
 # Cognitive Learning System (CLS)
 
-Live site: **https://cognitive-flashcard.vercel.app** (Vercel) · **https://eugeneousxr.github.io/AIFlashcards/** (GitHub Pages, after Pages is enabled)
+## Try it now
+
+**👉 [Open the live app](https://cognitive-flashcard.vercel.app)**
+
+Share that link with anyone — it runs in the browser on phone or desktop. Pick **Physics**, explore the world map, complete Motion and Forces lessons, and use the review flashcards on the right.
+
+Also available: [studyassistantai-deploy.vercel.app](https://studyassistantai-deploy.vercel.app)
 
 Mobile-first PWA: immersive physics world map, frame-based learning, review flashcards, localStorage persistence.
 
