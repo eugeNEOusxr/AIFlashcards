@@ -1,4 +1,5 @@
-import type { FramePhase, LearningFrame, LearningModule } from "../content/frames/types";
+import { shuffleFrameAnswers } from "../content/frames/shuffleFrameAnswers";
+import type { FrameAnswers, FramePhase, LearningFrame, LearningModule } from "../content/frames/types";
 
 export type FrameSessionState = {
   moduleId: string;
@@ -6,6 +7,9 @@ export type FrameSessionState = {
   phase: FramePhase;
   selectedIndex: number | null;
   isCorrect: boolean | null;
+  /** Shuffled choices for the active frame — keeps question tied to the right answer */
+  shuffledAnswers: FrameAnswers | null;
+  shuffledCorrectIndex: number | null;
 };
 
 export type FrameAction =
@@ -23,11 +27,32 @@ export function initialFrameSession(moduleId: string): FrameSessionState {
     phase: "answering",
     selectedIndex: null,
     isCorrect: null,
+    shuffledAnswers: null,
+    shuffledCorrectIndex: null,
   };
 }
 
-function resetFramePhase(): Pick<FrameSessionState, "phase" | "selectedIndex" | "isCorrect"> {
+function resetFramePhase(): Pick<
+  FrameSessionState,
+  "phase" | "selectedIndex" | "isCorrect"
+> {
   return { phase: "answering", selectedIndex: null, isCorrect: null };
+}
+
+/** Attach a fresh shuffle whenever the learner lands on a frame. */
+export function withShuffledAnswers(
+  state: FrameSessionState,
+  module: LearningModule
+): FrameSessionState {
+  const frame = module.frames[state.frameIndex];
+  if (!frame) return state;
+  const { answers, correctIndex } = shuffleFrameAnswers(frame.answers, frame.correctIndex);
+  return {
+    ...state,
+    ...resetFramePhase(),
+    shuffledAnswers: answers,
+    shuffledCorrectIndex: correctIndex,
+  };
 }
 
 /** Yes or post-clarification Continue — advance frame or finish module. */
@@ -39,11 +64,14 @@ function advanceAfterReflection(
   if (isLast) {
     return { ...state, phase: "done" };
   }
-  return {
-    ...state,
-    frameIndex: state.frameIndex + 1,
-    ...resetFramePhase(),
-  };
+  return withShuffledAnswers(
+    {
+      ...state,
+      frameIndex: state.frameIndex + 1,
+      ...resetFramePhase(),
+    },
+    module
+  );
 }
 
 export function frameReducer(
@@ -52,7 +80,11 @@ export function frameReducer(
   module: LearningModule | null
 ): FrameSessionState | null {
   if (action.type === "ENTER_MODULE") {
-    return initialFrameSession(action.moduleId);
+    const mod = module;
+    if (!mod || mod.id !== action.moduleId) {
+      return initialFrameSession(action.moduleId);
+    }
+    return withShuffledAnswers(initialFrameSession(action.moduleId), mod);
   }
 
   if (!state || !module || state.moduleId !== module.id) return state;
@@ -63,7 +95,8 @@ export function frameReducer(
   switch (action.type) {
     case "SELECT_ANSWER": {
       if (state.phase !== "answering") return state;
-      const isCorrect = action.index === frame.correctIndex;
+      const correctSlot = state.shuffledCorrectIndex ?? frame.correctIndex;
+      const isCorrect = action.index === correctSlot;
       return {
         ...state,
         selectedIndex: action.index,
@@ -90,11 +123,14 @@ export function frameReducer(
       if (nextIndex >= module.frames.length) {
         return { ...state, phase: "done" };
       }
-      return {
-        ...state,
-        frameIndex: nextIndex,
-        ...resetFramePhase(),
-      };
+      return withShuffledAnswers(
+        {
+          ...state,
+          frameIndex: nextIndex,
+          ...resetFramePhase(),
+        },
+        module
+      );
     }
 
     default:
@@ -108,6 +144,21 @@ export function currentFrame(
 ): LearningFrame | null {
   if (!module || !state) return null;
   return module.frames[state.frameIndex] ?? null;
+}
+
+/** Frame shown in the UI — shuffled answers, same question and correct text. */
+export function displayFrame(
+  module: LearningModule | null,
+  state: FrameSessionState | null
+): LearningFrame | null {
+  const frame = currentFrame(module, state);
+  if (!frame || !state) return frame;
+  if (!state.shuffledAnswers || state.shuffledCorrectIndex === null) return frame;
+  return {
+    ...frame,
+    answers: state.shuffledAnswers,
+    correctIndex: state.shuffledCorrectIndex,
+  };
 }
 
 export function moduleFinished(

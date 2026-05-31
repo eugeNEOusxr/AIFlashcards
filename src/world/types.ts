@@ -7,7 +7,15 @@ export type PathwayId =
   | "energy"
   | "electricity"
   | "waves"
-  | "thermodynamics";
+  | "thermodynamics"
+  | "nature-chemistry"
+  | "chemistry-mixtures"
+  | "chemistry-bonds"
+  | "chemistry-cycles"
+  | "living-biology"
+  | "biology-habitats"
+  | "biology-energy"
+  | "biology-diversity";
 
 export type ModuleId =
   | "mod-force"

@@ -1,6 +1,14 @@
 import { motion } from "framer-motion";
+import type { BoundLearningFrame } from "../../content/curriculum/bindChapterHierarchy";
+import { layerLabel, levelLabel } from "../../content/curriculum/questionHierarchy";
 import { composeFrameDisplay } from "../../content/frames/frameDisplay";
 import type { FramePhase, LearningFrame } from "../../content/frames/types";
+
+function hierarchyTrail(frame: LearningFrame): string | null {
+  if (!("level" in frame) || !("contentLayer" in frame)) return null;
+  const f = frame as BoundLearningFrame;
+  return `Ch ${f.chapterNumber} · ${levelLabel(f.level)} · ${layerLabel(f.contentLayer)} · Q${f.sequenceInChapter}`;
+}
 
 type Props = {
   frame: LearningFrame;
@@ -30,6 +38,7 @@ export function CognitiveFrameCard({
   onContinueAfterClarification,
 }: Props) {
   const display = composeFrameDisplay(frame, phase, selectedIndex, isCorrect);
+  const trail = hierarchyTrail(frame);
 
   return (
     <motion.article
@@ -43,8 +52,13 @@ export function CognitiveFrameCard({
     >
       <header className="cognitive-frame__head">
         <span className="cognitive-frame__module">{moduleTitle}</span>
+        {trail ? (
+          <span className="cognitive-frame__hierarchy" title="Chapter · level · layer · sequence">
+            {trail}
+          </span>
+        ) : null}
         <span className="cognitive-frame__progress">
-          Frame {frameIndex + 1} of {frameTotal}
+          Question {frameIndex + 1} of {frameTotal}
         </span>
         <h2 className="cognitive-frame__title">{frame.title}</h2>
       </header>

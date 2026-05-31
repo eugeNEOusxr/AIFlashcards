@@ -30,6 +30,14 @@
   color: var(--brand, #5b8def);
 }
 
+.cognitive-frame__hierarchy {
+  flex: 1 1 100%;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: rgba(94, 234, 212, 0.8);
+}
+
 .cognitive-frame__progress {
   margin-left: auto;
   font-size: 11px;

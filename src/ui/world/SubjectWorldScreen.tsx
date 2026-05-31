@@ -1,4 +1,5 @@
-import { subjects } from "../../world/physicsWorld";
+import { getSubjectProfile } from "../../world/subjectProfiles";
+import { subjects } from "../../world/subjectWorld";
 import type { NavScreen, SubjectId } from "../../world/types";
 import { resetAllProgress } from "../../memory/resetProgress";
 import { WorldEnvironmentField } from "./WorldEnvironmentField";
@@ -32,11 +33,10 @@ const ENTITY_SLOTS: Record<SubjectId, SubjectEntitySlot> = {
   },
 };
 
-const TAGLINES: Record<SubjectId, string> = {
-  physics: "Motion · forces · energy flow",
-  chemistry: "Transformation · structure · reaction",
-  biology: "Growth · cells · living networks",
-};
+function homeTagline(subjectId: SubjectId): string {
+  if (subjectId === "biology") return "Growth · cells · living networks";
+  return getSubjectProfile(subjectId).homeTagline;
+}
 
 type Props = {
   onEnterSubject: (subjectId: SubjectId) => void;
@@ -82,7 +82,7 @@ export function SubjectWorldScreen({ onEnterSubject, onNavigate }: Props) {
               key={s.id}
               subjectId={s.id as SubjectId}
               label={s.label}
-              tagline={TAGLINES[s.id as SubjectId]}
+              tagline={homeTagline(s.id as SubjectId)}
               slot={ENTITY_SLOTS[s.id as SubjectId]}
               available={s.available}
               onEnter={() => {

@@ -1,5 +1,5 @@
 import { getModule } from "../content/frames/registry";
-import type { FramePhase } from "../content/frames/types";
+import type { FrameAnswers, FramePhase } from "../content/frames/types";
 import type { NavScreen } from "../world/types";
 
 const NAV_KEY = "cls:frame-nav:v1";
@@ -11,31 +11,17 @@ export type PersistedFrameSession = {
   phase: FramePhase;
   selectedIndex: number | null;
   isCorrect: boolean | null;
+  shuffledAnswers?: FrameAnswers;
+  shuffledCorrectIndex?: number;
 };
 
 export function saveFrameNav(nav: NavScreen): void {
   localStorage.setItem(NAV_KEY, JSON.stringify(nav));
 }
 
+/** Always open at Study Worlds — subjects are choices; map/lesson progress is stored separately. */
 export function loadFrameNav(): NavScreen {
-  try {
-    const raw = localStorage.getItem(NAV_KEY);
-    if (!raw) return { kind: "HOME" };
-    const nav = JSON.parse(raw) as NavScreen;
-    if (nav.kind === "FRAME_MODULE") {
-      if (getModule(nav.moduleId)) return nav;
-      return { kind: "SUBJECT", subjectId: nav.subjectId ?? "physics" };
-    }
-    if (nav.kind === "SUBJECT" || nav.kind === "HOME") {
-      return nav;
-    }
-    if (nav.kind === "LESSON" || nav.kind === "PATHWAY") {
-      return { kind: "SUBJECT", subjectId: nav.subjectId };
-    }
-    return { kind: "HOME" };
-  } catch {
-    return { kind: "HOME" };
-  }
+  return { kind: "HOME" };
 }
 
 export function saveFrameSession(session: PersistedFrameSession): void {

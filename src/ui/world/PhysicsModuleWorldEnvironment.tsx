@@ -1,9 +1,7 @@
 import { memo, useMemo } from "react";
 import type { PathwayBiome } from "../../world/pathwayBiomes";
-import type { PhysicsModuleLandmarkId } from "../../world/physicsModuleLandmarks";
-
 type LandmarkZone = {
-  id: PhysicsModuleLandmarkId;
+  id: string;
   topPct: number;
   biome: PathwayBiome;
 };
@@ -13,6 +11,7 @@ type Props = {
   mapWidth: number;
   activeBiome: PathwayBiome;
   landmarks: LandmarkZone[];
+  envClassPrefix?: string;
 };
 
 const AMBIENT_SHAPES = [
@@ -29,7 +28,9 @@ function PhysicsModuleWorldEnvironmentInner({
   mapWidth,
   activeBiome,
   landmarks,
+  envClassPrefix = "physics-module-env",
 }: Props) {
+  const e = envClassPrefix;
   const particles = useMemo(
     () =>
       Array.from({ length: 28 }, (_, i) => ({
@@ -45,7 +46,7 @@ function PhysicsModuleWorldEnvironmentInner({
 
   return (
     <div
-      className={`physics-module-env ${activeBiome.className}`}
+      className={`${e} ${activeBiome.className}`}
       style={{
         height: mapHeight,
         width: mapWidth,
@@ -54,19 +55,19 @@ function PhysicsModuleWorldEnvironmentInner({
       }}
       aria-hidden
     >
-      <div className="physics-module-env__sky" />
-      <div className="physics-module-env__grid physics-module-env__grid--far" />
-      <div className="physics-module-env__grid physics-module-env__grid--near" />
-      <div className="physics-module-env__aurora physics-module-env__aurora--a" />
-      <div className="physics-module-env__aurora physics-module-env__aurora--b" />
-      <div className="physics-module-env__haze physics-module-env__haze--far" />
-      <div className="physics-module-env__haze physics-module-env__haze--mid" />
+      <div className={`${e}__sky`} />
+      <div className={`${e}__grid ${e}__grid--far`} />
+      <div className={`${e}__grid ${e}__grid--near`} />
+      <div className={`${e}__aurora ${e}__aurora--a`} />
+      <div className={`${e}__aurora ${e}__aurora--b`} />
+      <div className={`${e}__haze ${e}__haze--far`} />
+      <div className={`${e}__haze ${e}__haze--mid`} />
 
-      <div className="physics-module-env__shapes">
+      <div className={`${e}__shapes`}>
         {AMBIENT_SHAPES.map((s) => (
           <span
             key={`${s.left}-${s.top}`}
-            className="physics-module-env__shape"
+            className={`${e}__shape`}
             style={{
               left: s.left,
               top: s.top,
@@ -82,25 +83,24 @@ function PhysicsModuleWorldEnvironmentInner({
       {landmarks.map((lm) => (
         <div
           key={lm.id}
-          className={`physics-module-env__glow-pool ${lm.biome.className}`}
+          className={`${e}__glow-pool ${lm.biome.className}`}
           style={{
             top: `${lm.topPct}%`,
-            left:
-              lm.id === "motion" || lm.id === "waves" || lm.id === "energy"
-                ? lm.id === "energy"
-                  ? "38%"
-                  : "14%"
-                : "58%",
+            left: ["energy", "change", "electricity", "cycles", "bonds"].includes(lm.id)
+              ? lm.id === "energy" || lm.id === "change"
+                ? "38%"
+                : "58%"
+              : "14%",
             ["--pool-accent" as string]: lm.biome.accent,
           }}
         />
       ))}
 
-      <div className="physics-module-env__particles">
+      <div className={`${e}__particles`}>
         {particles.map((p) => (
           <span
             key={p.id}
-            className="physics-module-env__particle"
+            className={`${e}__particle`}
             style={{
               left: p.left,
               top: p.top,
@@ -113,8 +113,8 @@ function PhysicsModuleWorldEnvironmentInner({
         ))}
       </div>
 
-      <div className="physics-module-env__horizon" />
-      <div className="physics-module-env__vignette" />
+      <div className={`${e}__horizon`} />
+      <div className={`${e}__vignette`} />
     </div>
   );
 }

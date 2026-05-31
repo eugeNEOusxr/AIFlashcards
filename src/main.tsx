@@ -13,6 +13,8 @@ import "./styles/curiosity-nodes.css";
 import "./styles/curriculum-map.css";
 import "./styles/subject-curriculum-spine.css";
 import "./styles/physics-module-world.css";
+import "./styles/chemistry-module-world.css";
+import "./styles/biology-module-world.css";
 import "./styles/module-tunnel-progression.css";
 import "./styles/curriculum-map-environment.css";
 import "./styles/cognitive-frame.css";

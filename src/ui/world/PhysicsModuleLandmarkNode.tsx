@@ -1,5 +1,4 @@
 import { memo, type CSSProperties, type Ref } from "react";
-import type { PhysicsModuleLandmarkId } from "../../world/physicsModuleLandmarks";
 import { ModuleWorldLandmark } from "./ModuleWorldLandmark";
 import type { LandmarkNodeData } from "./physicsModuleLandmarkTypes";
 
@@ -9,7 +8,9 @@ type Props = {
   zIndex: number;
   parallaxRef: (el: HTMLDivElement | null) => void;
   anchorRef?: Ref<HTMLDivElement>;
-  onEnter: (id: PhysicsModuleLandmarkId) => void;
+  onEnter: (id: string) => void;
+  /** Root BEM prefix — physics-module-world or chemistry-module-world */
+  mapClassPrefix?: string;
 };
 
 function PhysicsModuleLandmarkNodeInner({
@@ -19,6 +20,7 @@ function PhysicsModuleLandmarkNodeInner({
   parallaxRef,
   anchorRef,
   onEnter,
+  mapClassPrefix = "physics-module-world",
 }: Props) {
   const { id, slot, title, tagline, visual, biome, frameBadge, canEnter, isIgniting } = entry;
 
@@ -26,14 +28,14 @@ function PhysicsModuleLandmarkNodeInner({
     <div
       ref={anchorRef}
       className={[
-        "physics-module-world__landmark",
-        `physics-module-world__landmark--${slot.align}`,
+        `${mapClassPrefix}__landmark`,
+        `${mapClassPrefix}__landmark--${slot.align}`,
       ].join(" ")}
       style={{ ...positionStyle, zIndex }}
     >
       <div
         ref={parallaxRef}
-        className="physics-module-world__landmark-shift"
+        className={`${mapClassPrefix}__landmark-shift`}
         data-landmark-id={id}
       >
         <ModuleWorldLandmark

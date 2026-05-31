@@ -1,7 +1,8 @@
-import { LANDMARK_FLOW_ORDER } from "../../world/physicsModuleLandmarks";
+import { landmarkFlowForSubject, landmarkLabelsForSubject } from "./subjectLandmarks";
 import { loadFrameProgress } from "../../memory/frameProgress";
 import { getModule, getModuleForLandmark } from "./registry";
 import { shuffleFrameAnswers } from "./shuffleFrameAnswers";
+import type { SubjectId } from "../../world/types";
 import type { LearningFrame } from "./types";
 
 export type ReviewFlashcard = {
@@ -17,20 +18,13 @@ export type ReviewFlashcard = {
   feedbackIncorrect: string;
 };
 
-const LANDMARK_LABELS: Record<string, string> = {
-  motion: "Motion & Forces",
-  forces: "Forces",
-  energy: "Energy",
-  waves: "Waves",
-  electricity: "Electricity",
-};
-
-export function buildReviewDeckFromProgress(): ReviewFlashcard[] {
+export function buildReviewDeckFromProgress(subjectId: SubjectId = "physics"): ReviewFlashcard[] {
   const store = loadFrameProgress();
   const cards: ReviewFlashcard[] = [];
+  const labels = landmarkLabelsForSubject(subjectId);
 
-  for (const landmarkId of LANDMARK_FLOW_ORDER) {
-    const mod = getModuleForLandmark(landmarkId);
+  for (const landmarkId of landmarkFlowForSubject(subjectId)) {
+    const mod = getModuleForLandmark(landmarkId, subjectId);
     if (!mod) continue;
     const progress = store.modules[mod.id];
     if (!progress?.completedFrameIds.length) continue;
@@ -41,7 +35,7 @@ export function buildReviewDeckFromProgress(): ReviewFlashcard[] {
       cards.push({
         id: `${mod.id}:${frame.id}`,
         moduleTitle: mod.title,
-        landmarkLabel: LANDMARK_LABELS[landmarkId] ?? landmarkId,
+        landmarkLabel: labels[landmarkId] ?? landmarkId,
         frameTitle: frame.title,
         fact: frame.fact,
         question: frame.question,
@@ -56,7 +50,6 @@ export function buildReviewDeckFromProgress(): ReviewFlashcard[] {
   return cards;
 }
 
-/** Fresh shuffle for one card (e.g. when revisiting in the sidebar). */
 export function reshuffleReviewCard(card: ReviewFlashcard, sourceFrame: LearningFrame): ReviewFlashcard {
   const { answers, correctIndex } = shuffleFrameAnswers(sourceFrame.answers, sourceFrame.correctIndex);
   return { ...card, answers, correctIndex };

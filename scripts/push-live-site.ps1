@@ -15,6 +15,9 @@ $dirs = @("src", "public", "scripts")
 foreach ($d in $dirs) {
   $src = Join-Path $Pwa $d
   $dst = Join-Path $DeployDir $d
+  if (Test-Path $dst) {
+    Remove-Item $dst -Recurse -Force
+  }
   if (Test-Path $src) {
     Copy-Item $src $dst -Recurse -Force
   }

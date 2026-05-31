@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AmbientBackground } from "../effects/AmbientBackground";
-import type { FrameLearningModel } from "../engine/useFrameLearning";
+import { useFrameLearning } from "../engine/useFrameLearning";
 import { getModule, getModuleForLandmark } from "../content/frames/registry";
 import { loadFrameNav, saveFrameNav } from "../memory/frameSession";
 import type { NavScreen } from "../world/types";
@@ -10,6 +10,9 @@ import { SubjectCurriculumScrollMap } from "./world/SubjectCurriculumScrollMap";
 import { WorldBreadcrumb } from "./world/WorldBreadcrumb";
 import { CognitiveFrameCard } from "./frame/CognitiveFrameCard";
 import { MapLayerNav } from "./world/MapLayerNav";
+import { getSubjectProfile } from "../world/subjectProfiles";
+import type { BiologyModuleLandmarkId } from "../world/biologyModuleLandmarks";
+import type { ChemistryModuleLandmarkId } from "../world/chemistryModuleLandmarks";
 import type { PhysicsModuleLandmarkId } from "../world/physicsModuleLandmarks";
 
 function headerForNav(nav: NavScreen): { kicker: string; title: string; subline: string } {
@@ -20,18 +23,22 @@ function headerForNav(nav: NavScreen): { kicker: string; title: string; subline:
         title: "Study Worlds",
         subline: "Choose a subject to begin",
       };
-    case "SUBJECT":
+    case "SUBJECT": {
+      const profile = getSubjectProfile(nav.subjectId);
       return {
-        kicker: "Subject map",
-        title: nav.subjectId === "physics" ? "Physics" : nav.subjectId,
-        subline: "Select a frame module to study",
+        kicker: profile.mapRegionKicker,
+        title: profile.mapRegionTitle,
+        subline: profile.homeTagline,
       };
+    }
     case "FRAME_MODULE": {
       const mod = getModule(nav.moduleId);
       return {
-        kicker: "Frame module",
+        kicker: mod ? `Chapter ${mod.chapterNumber}` : "Chapter",
         title: mod?.title ?? "Learning module",
-        subline: mod?.subtitle ?? "One frame at a time",
+        subline: mod
+          ? `${mod.subtitle} · ${mod.frames.length} questions`
+          : "One question at a time",
       };
     }
     default:
@@ -39,11 +46,15 @@ function headerForNav(nav: NavScreen): { kicker: string; title: string; subline:
   }
 }
 
-type Props = {
-  model: FrameLearningModel;
-};
+function subjectFromNav(nav: NavScreen): import("../world/types").SubjectId {
+  if (nav.kind === "SUBJECT" || nav.kind === "FRAME_MODULE") return nav.subjectId;
+  return "physics";
+}
 
-export function FrameLearningApp({ model }: Props) {
+export function FrameLearningApp() {
+  const [nav, setNav] = useState<NavScreen>(() => loadFrameNav());
+  const activeSubject = subjectFromNav(nav);
+  const model = useFrameLearning(activeSubject);
   const {
     session,
     module,
@@ -64,8 +75,6 @@ export function FrameLearningApp({ model }: Props) {
     mapModel,
   } = model;
 
-  const [nav, setNav] = useState<NavScreen>(() => loadFrameNav());
-
   useEffect(() => {
     saveFrameNav(nav);
   }, [nav]);
@@ -85,11 +94,13 @@ export function FrameLearningApp({ model }: Props) {
 
   const header = headerForNav(nav);
 
-  const openFrameModule = (landmarkId: PhysicsModuleLandmarkId) => {
-    const mod = getModuleForLandmark(landmarkId);
+  const openFrameModule = (
+    landmarkId: PhysicsModuleLandmarkId | ChemistryModuleLandmarkId | BiologyModuleLandmarkId
+  ) => {
+    const mod = getModuleForLandmark(landmarkId, activeSubject);
     if (!mod) return;
     enterModule(mod.id);
-    setNav({ kind: "FRAME_MODULE", subjectId: "physics", moduleId: mod.id });
+    setNav({ kind: "FRAME_MODULE", subjectId: activeSubject, moduleId: mod.id });
   };
 
   const handleReflectionYes = () => {
@@ -97,7 +108,7 @@ export function FrameLearningApp({ model }: Props) {
     reflectionYes();
     if (isLast) {
       completeModule();
-      setNav({ kind: "SUBJECT", subjectId: "physics" });
+      setNav({ kind: "SUBJECT", subjectId: activeSubject });
     }
   };
 
@@ -106,7 +117,7 @@ export function FrameLearningApp({ model }: Props) {
     continueAfterClarification();
     if (isLast) {
       completeModule();
-      setNav({ kind: "SUBJECT", subjectId: "physics" });
+      setNav({ kind: "SUBJECT", subjectId: activeSubject });
     }
   };
 
@@ -221,7 +232,7 @@ export function FrameLearningApp({ model }: Props) {
               className="la-primary"
               onClick={() => {
                 completeModule();
-                setNav({ kind: "SUBJECT", subjectId: "physics" });
+                setNav({ kind: "SUBJECT", subjectId: activeSubject });
               }}
             >
               Return to map

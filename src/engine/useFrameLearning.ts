@@ -4,18 +4,22 @@ import { logActiveFrame } from "../content/frames/logActiveFrame";
 import { markFrameComplete } from "../memory/frameProgress";
 import { loadFrameSession, saveFrameSession } from "../memory/frameSession";
 import {
-  currentFrame,
+  displayFrame,
   frameReducer,
   moduleFinished,
+  withShuffledAnswers,
   type FrameSessionState,
 } from "./frameEngine";
 import { createFrameMapModel } from "./frameMapModel";
+import type { SubjectId } from "../world/types";
 
-export function useFrameLearning() {
+export function useFrameLearning(activeSubjectId: SubjectId = "physics") {
   const [progressTick, setProgressTick] = useState(0);
   const [session, dispatch] = useReducer(
     (s: FrameSessionState | null, a: Parameters<typeof frameReducer>[1]) => {
-      const module = s ? getModule(s.moduleId) : null;
+      const moduleId =
+        a.type === "ENTER_MODULE" ? a.moduleId : s?.moduleId;
+      const module = moduleId ? getModule(moduleId) : null;
       return frameReducer(s, a, module);
     },
     null as FrameSessionState | null,
@@ -24,18 +28,24 @@ export function useFrameLearning() {
       if (!saved) return null;
       const mod = getModule(saved.moduleId);
       if (!mod) return null;
-      return {
+      const base: FrameSessionState = {
         moduleId: saved.moduleId,
         frameIndex: saved.frameIndex,
         phase: saved.phase,
         selectedIndex: saved.selectedIndex,
         isCorrect: saved.isCorrect,
+        shuffledAnswers: saved.shuffledAnswers ?? null,
+        shuffledCorrectIndex: saved.shuffledCorrectIndex ?? null,
       };
+      if (base.shuffledAnswers && base.shuffledCorrectIndex !== null) {
+        return base;
+      }
+      return withShuffledAnswers(base, mod);
     }
   );
 
   const module = session ? getModule(session.moduleId) : null;
-  const frame = currentFrame(module, session);
+  const frame = displayFrame(module, session);
   const finished = moduleFinished(module, session);
 
   useEffect(() => {
@@ -50,6 +60,8 @@ export function useFrameLearning() {
       phase: session.phase,
       selectedIndex: session.selectedIndex,
       isCorrect: session.isCorrect,
+      shuffledAnswers: session.shuffledAnswers ?? undefined,
+      shuffledCorrectIndex: session.shuffledCorrectIndex ?? undefined,
     });
   }, [session]);
 
@@ -57,7 +69,10 @@ export function useFrameLearning() {
     setProgressTick((t) => t + 1);
   }, []);
 
-  const mapModel = useMemo(() => createFrameMapModel(), [progressTick]);
+  const mapModel = useMemo(
+    () => createFrameMapModel(activeSubjectId),
+    [activeSubjectId, progressTick]
+  );
 
   const enterModule = useCallback((moduleId: string) => {
     dispatch({ type: "ENTER_MODULE", moduleId });

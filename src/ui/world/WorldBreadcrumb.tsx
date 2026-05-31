@@ -1,4 +1,6 @@
-import { getPathway } from "../../world/physicsWorld";
+import { getModule } from "../../content/frames/registry";
+import { getPathway, getSubject } from "../../world/subjectWorld";
+import { getSubjectProfile } from "../../world/subjectProfiles";
 import type { NavScreen, PathwayId } from "../../world/types";
 
 type Props = {
@@ -20,7 +22,7 @@ export function WorldBreadcrumb({ screen, onNavigate }: Props) {
     screen.kind === "FRAME_MODULE"
   ) {
     crumbs.push({
-      label: screen.subjectId === "physics" ? "Physics" : screen.subjectId,
+      label: getSubjectProfile(screen.subjectId).label,
       target: { kind: "SUBJECT", subjectId: screen.subjectId },
     });
   }
@@ -35,8 +37,9 @@ export function WorldBreadcrumb({ screen, onNavigate }: Props) {
   }
 
   if (screen.kind === "FRAME_MODULE") {
+    const mod = getModule(screen.moduleId);
     crumbs.push({
-      label: "What Is Force?",
+      label: mod?.title ?? getSubject(screen.subjectId)?.label ?? screen.moduleId,
       target: {
         kind: "FRAME_MODULE",
         subjectId: screen.subjectId,

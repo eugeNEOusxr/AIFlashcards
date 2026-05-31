@@ -1,14 +1,24 @@
 import type { Lesson } from "./curriculumTypes";
+import { chaptersForSubject, getChapter } from "./curriculum/frameChapterRegistry";
+import { PHYSICS_CHAPTER_1 } from "./curriculum/physicsChapter1Hierarchy";
 import type { PathwayId } from "../world/types";
 
 /**
- * Frame-only app: legacy chapter arrays are not loaded.
- * Do not import physicsChapter1 / energyChapter1 / etc. here.
+ * Legacy lesson arrays are empty — frame chapters drive progression.
+ * @see frameChapterRegistry.ts and physicsChapter1Hierarchy.ts
  */
-export function getChapterForPathway(_pathwayId: PathwayId): Lesson[] {
+export function getChapterForPathway(pathwayId: PathwayId): Lesson[] {
+  if (pathwayId === "motion-forces") return [];
   return [];
 }
 
-export function pathwayHasChapter(_pathwayId: PathwayId): boolean {
-  return false;
+export function pathwayHasChapter(pathwayId: PathwayId): boolean {
+  return pathwayId === "motion-forces";
 }
+
+export function getFrameChapterForPathway(pathwayId: PathwayId) {
+  if (pathwayId === "motion-forces") return getChapter(PHYSICS_CHAPTER_1.id);
+  return null;
+}
+
+export { chaptersForSubject, getChapter, PHYSICS_CHAPTER_1 };

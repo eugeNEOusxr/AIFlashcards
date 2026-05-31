@@ -5,23 +5,27 @@ import {
   sourceFrameForReviewCard,
   type ReviewFlashcard,
 } from "../../content/frames/buildReviewDeck";
+import type { SubjectId } from "../../world/types";
 
 type Props = {
+  subjectId: SubjectId;
   /** Bump when map progress refreshes so the deck reloads */
   refreshKey: number;
 };
 
-export function PhysicsReviewSidebar({ refreshKey }: Props) {
+export function PhysicsReviewSidebar({ subjectId, refreshKey }: Props) {
   const [open, setOpen] = useState(true);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
-  const [cards, setCards] = useState<ReviewFlashcard[]>(() => buildReviewDeckFromProgress());
+  const [cards, setCards] = useState<ReviewFlashcard[]>(() =>
+    buildReviewDeckFromProgress(subjectId)
+  );
 
   useEffect(() => {
-    setCards(buildReviewDeckFromProgress());
+    setCards(buildReviewDeckFromProgress(subjectId));
     setIndex(0);
     setPicked(null);
-  }, [refreshKey]);
+  }, [refreshKey, subjectId]);
 
   const card = cards[index] ?? null;
   const total = cards.length;

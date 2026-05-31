@@ -1,45 +1,52 @@
 import { getModuleForLandmark } from "../content/frames/registry";
+import { landmarkFlowForSubject } from "../content/frames/subjectLandmarks";
 import { completedFrameCount, isModuleComplete } from "../memory/frameProgress";
-import type { PhysicsModuleLandmarkId } from "../world/physicsModuleLandmarks";
+import type { SubjectId } from "../world/types";
 import type { ModuleProgressState } from "../world/types";
 
 /** Map UI only — zero legacy lesson/question arrays */
 export type FrameMapModel = {
-  landmarkProgress: (landmarkId: PhysicsModuleLandmarkId) => ModuleProgressState;
-  landmarkVisualState: (landmarkId: PhysicsModuleLandmarkId) => LandmarkVisualState;
-  activeLandmarkId: () => PhysicsModuleLandmarkId | null;
-  canEnterLandmark: (landmarkId: PhysicsModuleLandmarkId) => boolean;
-  frameCountForLandmark: (landmarkId: PhysicsModuleLandmarkId) => number;
+  subjectId: SubjectId;
+  landmarkProgress: (landmarkId: string) => ModuleProgressState;
+  landmarkVisualState: (landmarkId: string) => LandmarkVisualState;
+  activeLandmarkId: () => string | null;
+  canEnterLandmark: (landmarkId: string) => boolean;
+  frameCountForLandmark: (landmarkId: string) => number;
+  landmarkFlow: () => string[];
 };
 
 export type LandmarkVisualState = "active" | "next" | "mastered" | "unlocked" | "locked";
 
-const FLOW: PhysicsModuleLandmarkId[] = ["motion", "forces", "energy", "waves", "electricity"];
-
-function flowIndex(landmarkId: PhysicsModuleLandmarkId): number {
-  return FLOW.indexOf(landmarkId);
+function flowIndex(flow: string[], landmarkId: string): number {
+  return flow.indexOf(landmarkId);
 }
 
-function priorLandmarkComplete(landmarkId: PhysicsModuleLandmarkId): boolean {
-  const idx = flowIndex(landmarkId);
+function priorLandmarkComplete(
+  flow: string[],
+  landmarkId: string,
+  subjectId: SubjectId
+): boolean {
+  const idx = flowIndex(flow, landmarkId);
   if (idx <= 0) return true;
-  return landmarkModuleComplete(FLOW[idx - 1]!);
+  return landmarkModuleComplete(flow[idx - 1]!, subjectId);
 }
 
-/** True when the landmark's frame module is fully complete */
-function landmarkModuleComplete(landmarkId: PhysicsModuleLandmarkId): boolean {
-  const mod = getModuleForLandmark(landmarkId);
+function landmarkModuleComplete(landmarkId: string, subjectId: SubjectId): boolean {
+  const mod = getModuleForLandmark(landmarkId, subjectId);
   if (!mod) return false;
   return isModuleComplete(mod.id);
 }
 
-export function createFrameMapModel(): FrameMapModel {
-  function progress(landmarkId: PhysicsModuleLandmarkId): ModuleProgressState {
-    const mod = getModuleForLandmark(landmarkId);
-    const idx = flowIndex(landmarkId);
+export function createFrameMapModel(subjectId: SubjectId): FrameMapModel {
+  const flow = landmarkFlowForSubject(subjectId);
+  const defaultActive = flow[0] ?? null;
+
+  function progress(landmarkId: string): ModuleProgressState {
+    const mod = getModuleForLandmark(landmarkId, subjectId);
+    const idx = flowIndex(flow, landmarkId);
 
     if (!mod) {
-      if (idx > 0 && priorLandmarkComplete(landmarkId)) return "unlocked";
+      if (idx > 0 && priorLandmarkComplete(flow, landmarkId, subjectId)) return "unlocked";
       return "locked";
     }
 
@@ -50,21 +57,21 @@ export function createFrameMapModel(): FrameMapModel {
 
     if (done === 0) {
       if (idx === 0) return "active";
-      if (priorLandmarkComplete(landmarkId)) return "unlocked";
+      if (priorLandmarkComplete(flow, landmarkId, subjectId)) return "unlocked";
       return "locked";
     }
 
     return "active";
   }
 
-  function nextLandmarkInFlow(): PhysicsModuleLandmarkId | null {
-    for (const id of FLOW) {
+  function nextLandmarkInFlow(): string | null {
+    for (const id of flow) {
       if (progress(id) !== "done") return id;
     }
     return null;
   }
 
-  function visual(landmarkId: PhysicsModuleLandmarkId): LandmarkVisualState {
+  function visual(landmarkId: string): LandmarkVisualState {
     const p = progress(landmarkId);
     if (p === "locked") return "locked";
     if (p === "done") return "mastered";
@@ -73,27 +80,28 @@ export function createFrameMapModel(): FrameMapModel {
     return "unlocked";
   }
 
-  function activeLandmarkId(): PhysicsModuleLandmarkId | null {
-    for (const id of FLOW) {
+  function activeLandmarkId(): string | null {
+    for (const id of flow) {
       if (progress(id) === "active") return id;
     }
-    const next = nextLandmarkInFlow();
-    return next ?? "motion";
+    return nextLandmarkInFlow() ?? defaultActive;
   }
 
-  function canEnterLandmark(landmarkId: PhysicsModuleLandmarkId): boolean {
-    return getModuleForLandmark(landmarkId) !== null && progress(landmarkId) !== "locked";
+  function canEnterLandmark(landmarkId: string): boolean {
+    return getModuleForLandmark(landmarkId, subjectId) !== null && progress(landmarkId) !== "locked";
   }
 
-  function frameCountForLandmark(landmarkId: PhysicsModuleLandmarkId): number {
-    return getModuleForLandmark(landmarkId)?.frames.length ?? 0;
+  function frameCountForLandmark(landmarkId: string): number {
+    return getModuleForLandmark(landmarkId, subjectId)?.frames.length ?? 0;
   }
 
   return {
+    subjectId,
     landmarkProgress: progress,
     landmarkVisualState: visual,
     activeLandmarkId,
     canEnterLandmark,
     frameCountForLandmark,
+    landmarkFlow: () => flow,
   };
 }

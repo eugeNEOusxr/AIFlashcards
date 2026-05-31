@@ -2,15 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { EducationalTier } from "../../cognitive/types";
 import type { ProgressionFlowPalette } from "../../world/tunnelProgressionPalette";
 import { progressionFlowPalette } from "../../world/tunnelProgressionPalette";
-import type { PhysicsModuleLandmarkId } from "../../world/physicsModuleLandmarks";
-
 export type TunnelSegmentState = "completed" | "active" | "next" | "future" | "dormant";
 
 export type ModuleTunnelSegment = {
   key: string;
   d: string;
   state: TunnelSegmentState;
-  toLandmarkId: PhysicsModuleLandmarkId;
+  toLandmarkId: string;
 };
 
 type Props = {
@@ -251,12 +249,12 @@ function TunnelSegmentGroup({
 
 export type UnlockPulseState = {
   segmentIndex: number | null;
-  ignitingLandmarkId: PhysicsModuleLandmarkId | null;
+  ignitingLandmarkId: string | null;
 };
 
 export function useTunnelUnlockPulse(
-  landmarkVisuals: Record<PhysicsModuleLandmarkId, string>,
-  flowOrder: PhysicsModuleLandmarkId[]
+  landmarkVisuals: Record<string, string>,
+  flowOrder: string[]
 ): UnlockPulseState {
   const [pulse, setPulse] = useState<UnlockPulseState>({
     segmentIndex: null,

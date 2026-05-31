@@ -1,7 +1,12 @@
+import { assertFrameQaAlignment } from "./assertFrameQaAlignment";
 import type { LearningFrame, LearningModule } from "./types";
 
 const FORBIDDEN_IN_FORCE = /\b(inertia|newton|first law|second law|third law|gravity)\b/i;
 const FORBIDDEN_IN_FORCES = /\b(inertia|newton|first law|second law|third law)\b/i;
+const FORBIDDEN_IN_CHEMISTRY_MATTER = /\b(quantum|orbital|mole|stoichiometry|periodic table)\b/i;
+const FORBIDDEN_IN_CHEMISTRY_CHANGE = /\b(equilibrium constant|Le Chatelier|half-life equation)\b/i;
+const FORBIDDEN_IN_BIOLOGY_CELLS = /\b(DNA replication|mitosis stages|mRNA|PCR)\b/i;
+const FORBIDDEN_IN_BIOLOGY_ORGANISMS = /\b(natural selection equation|Hardy-Weinberg|kingdom phylum)\b/i;
 const ARROW_NOTATION = /->|=>|→/;
 
 export function validateFrame(frame: LearningFrame, moduleId: string): string[] {
@@ -34,9 +39,39 @@ export function validateFrame(frame: LearningFrame, moduleId: string): string[] 
     }
   }
 
+  if (moduleId === "chemistry.matter") {
+    const combined = [frame.fact, frame.visualAid, frame.question, ...frame.answers].join(" ");
+    if (FORBIDDEN_IN_CHEMISTRY_MATTER.test(combined)) {
+      errors.push(`${frame.id}: matter module must stay at nature basics`);
+    }
+  }
+
+  if (moduleId === "chemistry.change") {
+    const combined = [frame.fact, frame.visualAid, frame.question, ...frame.answers].join(" ");
+    if (FORBIDDEN_IN_CHEMISTRY_CHANGE.test(combined)) {
+      errors.push(`${frame.id}: change module must stay at nature basics`);
+    }
+  }
+
+  if (moduleId === "biology.cells") {
+    const combined = [frame.fact, frame.visualAid, frame.question, ...frame.answers].join(" ");
+    if (FORBIDDEN_IN_BIOLOGY_CELLS.test(combined)) {
+      errors.push(`${frame.id}: cells module must stay at nature basics`);
+    }
+  }
+
+  if (moduleId === "biology.organisms") {
+    const combined = [frame.fact, frame.visualAid, frame.question, ...frame.answers].join(" ");
+    if (FORBIDDEN_IN_BIOLOGY_ORGANISMS.test(combined)) {
+      errors.push(`${frame.id}: organisms module must stay at nature basics`);
+    }
+  }
+
   if (frame.feedback.correct.includes(frame.visualAid.slice(0, 20))) {
     errors.push(`${frame.id}: feedback.correct must not repeat visualAid`);
   }
+
+  errors.push(...assertFrameQaAlignment(frame));
 
   return errors;
 }

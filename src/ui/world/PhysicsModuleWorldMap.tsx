@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, type CSSProperties } from "rea
 import type { FrameMapModel } from "../../engine/frameMapModel";
 import { getModuleForLandmark } from "../../content/frames/registry";
 import { completedFrameCount } from "../../memory/frameProgress";
-import { PhysicsReviewSidebar } from "./PhysicsReviewSidebar";
+import { getSubjectProfile } from "../../world/subjectProfiles";
+import { SubjectReviewSidebar } from "./SubjectReviewSidebar";
 import { resolveEducationalTier } from "../../cognitive/tierResolver";
 import { getPathwayBiome } from "../../world/pathwayBiomes";
 import {
@@ -76,6 +77,7 @@ export function PhysicsModuleWorldMap({
   onNavigate,
   onEnterLandmark,
 }: Props) {
+  const profile = getSubjectProfile("physics");
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
@@ -85,9 +87,9 @@ export function PhysicsModuleWorldMap({
   const mapWidth = physicsModuleMapWidth();
   const mapHeight = physicsModuleMapHeight();
   const activeId = mapModel.activeLandmarkId();
-  const startBiome = getPathwayBiome("motion-forces");
+  const startBiome = getPathwayBiome(profile.defaultPathwayId);
   const activeBiome = getPathwayBiome(
-    activeId ? landmarkById(activeId).biomeId : "motion-forces"
+    activeId ? landmarkById(activeId as PhysicsModuleLandmarkId).biomeId : profile.defaultPathwayId
   );
 
   const landmarkNodes = useMemo((): LandmarkNodeData[] => {
@@ -106,7 +108,7 @@ export function PhysicsModuleWorldMap({
           frameCount > 0
             ? `${frameCount} learning frame${frameCount === 1 ? "" : "s"}`
             : "Coming soon",
-        canEnter: mapModel.canEnterLandmark(lm.id) && getModuleForLandmark(lm.id) !== null,
+        canEnter: mapModel.canEnterLandmark(lm.id) && getModuleForLandmark(lm.id, "physics") !== null,
         isIgniting: false,
       };
     });
@@ -232,7 +234,7 @@ export function PhysicsModuleWorldMap({
   const reviewRefreshKey = useMemo(() => {
     let count = 0;
     for (const id of LANDMARK_FLOW_ORDER) {
-      const mod = getModuleForLandmark(id);
+      const mod = getModuleForLandmark(id, "physics");
       if (mod) count += completedFrameCount(mod.id);
     }
     return count;
@@ -260,11 +262,12 @@ export function PhysicsModuleWorldMap({
             mapHeight={mapHeight}
             activeBiome={activeBiome}
             landmarks={envLandmarks}
+            envClassPrefix={profile.envClassPrefix}
           />
 
           <div className="physics-module-world__region-label">
-            <span className="physics-module-world__region-kicker">Progression world</span>
-            <span className="physics-module-world__region-title">Physics</span>
+            <span className="physics-module-world__region-kicker">{profile.mapRegionKicker}</span>
+            <span className="physics-module-world__region-title">{profile.mapRegionTitle}</span>
           </div>
 
           <ModuleTunnelProgression
@@ -288,6 +291,10 @@ export function PhysicsModuleWorldMap({
               <ModuleWorldStart
                 accent={startBiome.accent}
                 accentSecondary={startBiome.accentSecondary}
+                kicker={profile.startOrb.kicker}
+                title={profile.startOrb.title}
+                subtitle={profile.startOrb.subtitle}
+                ariaLabel={profile.startOrb.ariaLabel}
               />
             </div>
           </div>
@@ -300,13 +307,13 @@ export function PhysicsModuleWorldMap({
               zIndex={14 + entry.slot.depth}
               parallaxRef={setParallaxRef(entry.id)}
               anchorRef={entry.id === activeId ? activeRef : undefined}
-              onEnter={onEnterLandmark}
+              onEnter={(id) => onEnterLandmark(id as PhysicsModuleLandmarkId)}
             />
           ))}
         </div>
         </div>
 
-        <PhysicsReviewSidebar refreshKey={reviewRefreshKey} />
+        <SubjectReviewSidebar subjectId="physics" refreshKey={reviewRefreshKey} />
       </div>
 
       <footer className="physics-module-world__legend" aria-label="Map legend">
