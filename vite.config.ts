@@ -1,8 +1,22 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+
+/** Block accidental resolution outside cognitive-pwa (e.g. sibling studyassistantai02). */
+const siblingOldProject = path.resolve(projectRoot, "..", "..", "studyassistantai02");
+
 export default defineConfig({
+  root: projectRoot,
+  server: {
+    fs: {
+      allow: [projectRoot],
+      deny: [siblingOldProject],
+    },
+  },
   plugins: [
     react(),
     VitePWA({
@@ -35,5 +49,5 @@ export default defineConfig({
       },
     }),
   ],
-  publicDir: "public",
+  publicDir: path.resolve(projectRoot, "public"),
 });

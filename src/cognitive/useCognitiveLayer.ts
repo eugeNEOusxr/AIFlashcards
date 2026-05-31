@@ -11,6 +11,8 @@ import {
   recordUnderstandingSignal,
 } from "./progressionStore";
 import { resolveEducationalTier, tierClassName } from "./tierResolver";
+import { learningSignalHooks } from "./learningSignalHooks";
+import type { ReflectionChoice } from "./reflectionTypes";
 import type { ProgressionSnapshot, UnderstandingSignal } from "./types";
 
 export function useCognitiveLayer(lesson: Lesson, question: LessonQuestion | null) {
@@ -42,6 +44,20 @@ export function useCognitiveLayer(lesson: Lesson, question: LessonQuestion | nul
       }
     },
     [lesson.id, lesson.conceptTags, question?.id]
+  );
+
+  /** Post-explanation reflection checkpoint → memory + future analytics hooks */
+  const submitReflection = useCallback(
+    (choice: ReflectionChoice) => {
+      const signal: UnderstandingSignal = choice === "understand" ? "understand" : "confusing";
+      submitSignal(signal);
+      learningSignalHooks.onReflectionCheckpoint?.({
+        lessonId: lesson.id,
+        choice,
+        timestamp: Date.now(),
+      });
+    },
+    [lesson.id, submitSignal]
   );
 
   const onIncorrectAnswer = useCallback(
@@ -85,6 +101,7 @@ export function useCognitiveLayer(lesson: Lesson, question: LessonQuestion | nul
     reinforcementQueue: getReinforcementQueue(),
     reinforcementCount,
     submitSignal,
+    submitReflection,
     onIncorrectAnswer,
     onLessonCompleted,
     refreshSnapshot: () => setSnapshot(getProgressionSnapshot()),

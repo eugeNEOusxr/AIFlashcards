@@ -16,7 +16,17 @@ export type ModuleId =
   | "mod-n2"
   | "mod-applications"
   | "mod-energy-intro"
-  | "mod-electricity-intro";
+  | "mod-energy-stores"
+  | "mod-energy-conservation"
+  | "mod-electricity-intro"
+  | "mod-electricity-resistance"
+  | "mod-electricity-circuits"
+  | "mod-waves-intro"
+  | "mod-waves-properties"
+  | "mod-waves-em"
+  | "mod-thermo-temp"
+  | "mod-thermo-conduction"
+  | "mod-thermo-engines";
 
 export type SubjectWorld = {
   id: SubjectId;
@@ -53,4 +63,6 @@ export type NavScreen =
   | { kind: "HOME" }
   | { kind: "SUBJECT"; subjectId: SubjectId }
   | { kind: "PATHWAY"; subjectId: SubjectId; pathwayId: PathwayId }
-  | { kind: "LESSON"; subjectId: SubjectId; pathwayId: PathwayId };
+  /** @deprecated Legacy — frame app uses FRAME_MODULE only */
+  | { kind: "LESSON"; subjectId: SubjectId; pathwayId: PathwayId }
+  | { kind: "FRAME_MODULE"; subjectId: SubjectId; moduleId: string };

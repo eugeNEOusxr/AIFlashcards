@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { memo } from "react";
 import type { SubjectId } from "../../world/types";
 import { SubjectTileVisual } from "../../components/subject-tiles/SubjectTileVisual";
 import { useSubjectTileParallax } from "../../components/subject-tiles/useSubjectTileParallax";
@@ -23,7 +23,7 @@ type Props = {
   onEnter: () => void;
 };
 
-export function SubjectWorldEntity({
+function SubjectWorldEntityInner({
   subjectId,
   label,
   tagline,
@@ -31,12 +31,13 @@ export function SubjectWorldEntity({
   available,
   onEnter,
 }: Props) {
-  const { ref, visualStyle, onPointerMove, onPointerLeave } = useSubjectTileParallax(available);
+  const { ref, setVisualRef, onPointerMove, onPointerLeave } = useSubjectTileParallax(available);
 
   return (
-    <motion.div
+    <div
       className={[
         "world-entity",
+        "world-entity--mounted",
         `world-entity--${subjectId}`,
         slot.driftClass,
         available ? "world-entity--live" : "world-entity--dormant",
@@ -48,9 +49,6 @@ export function SubjectWorldEntity({
         ["--entity-scale" as string]: String(slot.scale),
         ["--entity-depth-z" as string]: `${slot.depthZ}px`,
       }}
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9, ease: "easeOut" }}
     >
       <button
         ref={ref}
@@ -66,7 +64,7 @@ export function SubjectWorldEntity({
         <span className="world-entity__glow" aria-hidden />
         <span className="world-entity__motion" aria-hidden />
 
-        <span className="world-entity__visual" style={visualStyle}>
+        <span ref={setVisualRef} className="world-entity__visual">
           <SubjectTileVisual subjectId={subjectId} />
         </span>
 
@@ -75,6 +73,8 @@ export function SubjectWorldEntity({
           <span className="world-entity__tagline">{available ? tagline : "Coming soon"}</span>
         </span>
       </button>
-    </motion.div>
+    </div>
   );
 }
+
+export const SubjectWorldEntity = memo(SubjectWorldEntityInner);

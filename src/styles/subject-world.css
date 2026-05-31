@@ -1,30 +1,55 @@
-/* Immersive subject knowledge space — full viewport, not a card grid */
+/* Home — natural document scroll (no nested viewport trap) */
 
+.la-app--home,
 .la-app--immersive-home {
   max-width: none;
+  width: 100%;
   padding: 0;
-  overflow: hidden;
+  min-height: 100dvh;
+  height: auto;
+  overflow: visible;
+  display: block;
 }
 
+.la-app--home .la-header,
 .la-app--immersive-home .la-header {
   display: none;
 }
 
+.la-app--home .fx-ambient,
 .la-app--immersive-home .fx-ambient {
+  position: fixed;
+  inset: 0;
   opacity: 0.35;
+  pointer-events: none;
+}
+
+.la-app--home > div,
+.la-app--immersive-home > div {
+  display: block;
+  height: auto;
+  overflow: visible;
 }
 
 .subject-world {
   position: relative;
-  min-height: 100vh;
   min-height: 100dvh;
-  overflow: hidden;
   isolation: isolate;
+  overflow: visible;
+  background: #070a12;
+}
+
+.subject-world__scroll {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* —— Environment field —— */
 .world-env {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
@@ -34,12 +59,83 @@
 .world-env__depth {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 140% 90% at 50% -20%, rgba(56, 100, 180, 0.22), transparent 55%),
-    radial-gradient(ellipse 80% 60% at 12% 88%, rgba(34, 211, 238, 0.12), transparent 50%),
-    radial-gradient(ellipse 70% 55% at 88% 75%, rgba(163, 230, 53, 0.08), transparent 48%),
-    radial-gradient(ellipse 60% 50% at 72% 18%, rgba(251, 191, 36, 0.07), transparent 45%),
-    linear-gradient(180deg, #121a2e 0%, #0c1222 38%, #080d18 100%);
+  background: linear-gradient(180deg, #0c1222 0%, #080d18 55%, #050810 100%);
+}
+
+.world-env__plane {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+}
+
+.world-env__plane--far {
+  background: radial-gradient(ellipse 120% 80% at 50% 0%, rgba(56, 100, 180, 0.18), transparent 60%);
+}
+
+.world-env__plane--mid {
+  background: radial-gradient(ellipse 70% 50% at 20% 60%, rgba(34, 211, 238, 0.1), transparent 55%);
+}
+
+.world-env__plane--near {
+  background: radial-gradient(ellipse 60% 45% at 85% 30%, rgba(236, 72, 153, 0.08), transparent 50%);
+}
+
+.world-env__emotion-mist {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.4;
+  animation: worldDiffusionDrift 28s ease-in-out infinite;
+}
+
+.world-env__emotion-mist--cyan {
+  width: 45vw;
+  height: 45vw;
+  left: -10%;
+  top: 15%;
+  background: rgba(34, 211, 238, 0.22);
+}
+
+.world-env__emotion-mist--violet {
+  width: 40vw;
+  height: 40vw;
+  right: -8%;
+  top: 40%;
+  background: rgba(139, 92, 246, 0.2);
+  animation-delay: -10s;
+}
+
+.world-env__emotion-mist--amber {
+  width: 35vw;
+  height: 35vw;
+  left: 35%;
+  bottom: 10%;
+  background: rgba(251, 191, 36, 0.12);
+  animation-delay: -18s;
+}
+
+.world-env__pixel-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image: linear-gradient(rgba(120, 170, 255, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 170, 255, 0.15) 1px, transparent 1px);
+  background-size: 6px 6px;
+  animation: worldMeshShift 40s linear infinite;
+}
+
+.world-env__scanlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    transparent 4px
+  );
+  animation: worldVeinPulse 6s linear infinite;
 }
 
 .world-env__diffusion {
@@ -102,15 +198,32 @@
 
 .world-env__particle {
   position: absolute;
-  width: 3px;
-  height: 3px;
   border-radius: 50%;
-  background: rgba(200, 220, 255, 0.45);
-  left: calc(mod(var(--i) * 23 + 7, 100) * 1%);
-  top: calc(mod(var(--i) * 31 + 11, 100) * 1%);
-  animation: worldParticleDrift calc(18s + mod(var(--i), 12) * 1.2s) ease-in-out infinite;
-  animation-delay: calc(var(--i) * -0.9s);
-  opacity: 0.35;
+  background: rgba(200, 220, 255, 0.55);
+  box-shadow: 0 0 6px rgba(34, 211, 238, 0.35);
+  animation: worldParticleDrift ease-in-out infinite;
+  opacity: 0.4;
+}
+
+.world-env__pixel {
+  position: absolute;
+  border-radius: 0;
+  background: rgba(34, 211, 238, 0.65);
+  box-shadow: 0 0 5px rgba(139, 92, 246, 0.4);
+  animation: worldPixelDrift ease-in-out infinite;
+  opacity: 0.45;
+}
+
+@keyframes worldPixelDrift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(5px, -12px);
+    opacity: 0.7;
+  }
 }
 
 @keyframes worldDiffusionDrift {
@@ -154,11 +267,27 @@
   }
 }
 
+.subject-world__nav {
+  position: sticky;
+  top: 0;
+  z-index: 8;
+  padding: 12px 16px 0;
+  pointer-events: auto;
+}
+
+.subject-world__nav .map-layer-nav {
+  position: relative;
+  margin: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  background: linear-gradient(180deg, rgba(6, 10, 22, 0.92), rgba(6, 10, 22, 0.72));
+}
+
 /* —— Header (minimal) —— */
 .subject-world__header {
   position: relative;
   z-index: 5;
-  padding: 28px 32px 0;
+  padding: 16px 24px 8px;
   max-width: 640px;
   pointer-events: none;
 }
@@ -190,8 +319,9 @@
 .subject-world__canvas {
   position: relative;
   z-index: 4;
-  min-height: calc(100vh - 120px);
-  min-height: calc(100dvh - 120px);
+  /* Tall enough for floating zones + footer on small screens */
+  min-height: max(720px, calc(100dvh - 80px));
+  padding-bottom: 48px;
   perspective: 1400px;
   transform-style: preserve-3d;
 }
@@ -211,11 +341,25 @@
 .world-entity {
   position: absolute;
   width: min(280px, 28vw);
-  transform: translate(-50%, -50%) scale(var(--entity-scale, 1));
+  transform: translate3d(-50%, -50%, 0) scale(var(--entity-scale, 1));
   transform-style: preserve-3d;
   animation-duration: 14s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  backface-visibility: hidden;
+}
+
+.world-entity--mounted {
+  animation: world-entity-enter 0.65s ease-out both;
+}
+
+@keyframes world-entity-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .world-entity--drift-a {
@@ -351,6 +495,10 @@
   position: relative;
   display: block;
   width: 100%;
+  min-height: 140px;
+  min-width: 200px;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
   padding: 8px 12px 0;
   transform-style: preserve-3d;
   transition: transform 0.18s ease-out;
@@ -406,7 +554,8 @@
   flex-wrap: wrap;
   gap: 10px;
   justify-content: center;
-  padding: 12px 20px 28px;
+  padding: 12px 20px max(32px, env(safe-area-inset-bottom, 24px));
+  pointer-events: auto;
 }
 
 .subject-world__utility {
@@ -425,23 +574,29 @@
 }
 
 @media (max-width: 900px) {
+  .subject-world__canvas {
+    /* Tall stack so Physics / Chemistry / Biology stay reachable via scroll */
+    min-height: max(1080px, calc(100dvh + 120px));
+    padding-bottom: 80px;
+  }
+
   .world-entity {
-    width: min(260px, 72vw);
+    width: min(280px, 86vw);
   }
 
   .world-entity--physics {
     left: 50% !important;
-    top: 32% !important;
+    top: 28% !important;
   }
 
   .world-entity--chemistry {
-    left: 28% !important;
-    top: 58% !important;
+    left: 50% !important;
+    top: 52% !important;
     z-index: 20 !important;
   }
 
   .world-entity--biology {
-    left: 72% !important;
-    top: 58% !important;
+    left: 50% !important;
+    top: 76% !important;
   }
 }

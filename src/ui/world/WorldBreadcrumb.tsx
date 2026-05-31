@@ -13,7 +13,12 @@ function pathwayLabel(pathwayId: PathwayId): string {
 export function WorldBreadcrumb({ screen, onNavigate }: Props) {
   const crumbs: { label: string; target: NavScreen }[] = [{ label: "Worlds", target: { kind: "HOME" } }];
 
-  if (screen.kind === "SUBJECT" || screen.kind === "PATHWAY" || screen.kind === "LESSON") {
+  if (
+    screen.kind === "SUBJECT" ||
+    screen.kind === "PATHWAY" ||
+    screen.kind === "LESSON" ||
+    screen.kind === "FRAME_MODULE"
+  ) {
     crumbs.push({
       label: screen.subjectId === "physics" ? "Physics" : screen.subjectId,
       target: { kind: "SUBJECT", subjectId: screen.subjectId },
@@ -29,10 +34,14 @@ export function WorldBreadcrumb({ screen, onNavigate }: Props) {
     });
   }
 
-  if (screen.kind === "LESSON") {
+  if (screen.kind === "FRAME_MODULE") {
     crumbs.push({
-      label: "Lesson",
-      target: { kind: "LESSON", subjectId: screen.subjectId, pathwayId: screen.pathwayId },
+      label: "What Is Force?",
+      target: {
+        kind: "FRAME_MODULE",
+        subjectId: screen.subjectId,
+        moduleId: screen.moduleId,
+      },
     });
   }
 

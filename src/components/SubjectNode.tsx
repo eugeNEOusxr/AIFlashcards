@@ -13,7 +13,7 @@ type Props = {
 
 export function SubjectNode({ subjectId, label, active, locked, onClick }: Props) {
   const enabled = Boolean(active) && !locked;
-  const { ref, visualStyle, onPointerMove, onPointerLeave } = useSubjectTileParallax(enabled);
+  const { ref, setVisualRef, onPointerMove, onPointerLeave } = useSubjectTileParallax(enabled);
 
   return (
     <motion.button
@@ -38,7 +38,7 @@ export function SubjectNode({ subjectId, label, active, locked, onClick }: Props
       <span className="subject-node__glow" aria-hidden />
       <span className="subject-node__motion" aria-hidden />
 
-      <span className="subject-node__visual-stage" style={visualStyle}>
+      <span ref={setVisualRef} className="subject-node__visual-stage">
         <SubjectTileVisual subjectId={subjectId} />
       </span>
 

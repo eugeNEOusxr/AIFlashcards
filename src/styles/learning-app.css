@@ -15,16 +15,46 @@
 }
 
 * { box-sizing: border-box; }
-html, body, #root { margin: 0; min-height: 100%; }
-body {
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background:
-    radial-gradient(ellipse 120% 70% at 50% -10%, rgba(56, 189, 248, 0.1), transparent 60%),
-    linear-gradient(180deg, #0e1220 0%, #0a0f1b 45%, #070b16 100%);
-  color: var(--text);
+
+/* Global scroll — document is the primary scroll surface on home / lesson screens */
+html {
+  height: -webkit-fill-available;
+  background: #070a12;
 }
 
-.la-app { max-width: 1100px; margin: 0 auto; padding: 20px 20px 120px; min-height: 100vh; position: relative; overflow: hidden; }
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  height: auto;
+  background: #070a12;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #070a12;
+  color: var(--text);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+.la-app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 20px 120px;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
 .la-app::before {
   content: "";
   position: absolute;
@@ -413,6 +443,65 @@ body {
 .la-explain__label { display: inline-block; font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); margin-bottom: 8px; }
 .la-explain__keytext { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.55; }
 .la-explain__resttext { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* Teach-first blocks (per-question, Learn Mode) */
+.la-card--teach-block,
+.la-card--reinforce {
+  animation-duration: 0.55s;
+}
+.la-teach-progress {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.la-teach-step-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand);
+}
+.la-h2--teach {
+  font-size: 1.35rem;
+  margin-bottom: 12px;
+}
+.la-teach-block-text {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--text);
+}
+.la-teach-block-text--visual {
+  font-size: 15px;
+  color: #c8d8f5;
+}
+.la-teach-block-text--reinforce {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  background: rgba(34, 211, 238, 0.06);
+}
+.la-note--teach-pace {
+  margin-top: -6px;
+  margin-bottom: 16px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.la-scripted-reflection__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.la-card--scripted-step .la-teach-progress {
+  color: var(--brand);
+}
 
 /* Feedback explain box */
 .la-explainbox { margin-top: 14px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,.03); }

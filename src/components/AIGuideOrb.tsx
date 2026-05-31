@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 type Props = {
-  mode: "TEACH" | "ASK" | "FEEDBACK" | "ADVANCE";
+  mode: "TEACH" | "REINFORCE" | "ASK" | "FEEDBACK" | "ADVANCE";
   feedback: "correct" | "incorrect" | null;
   /** Cognitive layer — orb brightens on confusion / visual request */
   cognitiveActive?: boolean;
@@ -13,7 +13,7 @@ export function AIGuideOrb({ mode, feedback, cognitiveActive }: Props) {
       ? "#4ade80"
       : feedback === "incorrect"
         ? "#f43f5e"
-        : mode === "TEACH"
+        : mode === "TEACH" || mode === "REINFORCE"
           ? "#22d3ee"
           : "#8b5cf6";
 

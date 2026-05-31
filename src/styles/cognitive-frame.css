@@ -1,0 +1,272 @@
+/* Frame-based cognitive learning — single continuous card per frame */
+
+.cognitive-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 22px 24px;
+  border-radius: 16px;
+  background: rgba(10, 14, 30, 0.92);
+  border: 1px solid rgba(121, 146, 224, 0.28);
+  backdrop-filter: blur(14px);
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.cognitive-frame__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+}
+
+.cognitive-frame__module {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand, #5b8def);
+}
+
+.cognitive-frame__progress {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted, #8b9dc3);
+}
+
+.cognitive-frame__title {
+  flex: 1 1 100%;
+  margin: 4px 0 0;
+  font-size: 1.45rem;
+  color: #e8eeff;
+}
+
+.cognitive-frame__label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand, #5b8def);
+  margin-bottom: 8px;
+}
+
+.cognitive-frame__fact-text {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #f0f4ff;
+}
+
+.cognitive-frame__visual {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(34, 211, 238, 0.06);
+}
+
+.cognitive-frame__visual-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.62;
+  color: #c8d8f5;
+  font-style: italic;
+}
+
+.cognitive-frame__clarification-visual {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.62;
+  color: #b8c5e8;
+  font-style: italic;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.cognitive-frame__feedback-text {
+  font-style: normal;
+}
+
+.cognitive-frame__prompt {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: #e2eaff;
+}
+
+.cognitive-frame__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cognitive-frame__choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(121, 146, 224, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  color: #dce7ff;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.45;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.cognitive-frame__choice:hover:not(:disabled) {
+  border-color: rgba(91, 141, 239, 0.6);
+  background: rgba(91, 141, 239, 0.1);
+}
+
+.cognitive-frame__choice:disabled {
+  cursor: default;
+}
+
+.cognitive-frame__choice--picked {
+  border-color: rgba(91, 141, 239, 0.7);
+  background: rgba(91, 141, 239, 0.15);
+}
+
+.cognitive-frame__choice--correct {
+  border-color: rgba(74, 222, 128, 0.6);
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.cognitive-frame__choice--wrong {
+  border-color: rgba(244, 63, 94, 0.55);
+  background: rgba(244, 63, 94, 0.1);
+}
+
+.cognitive-frame__choice--dim {
+  opacity: 0.45;
+}
+
+.cognitive-frame__choice-letter {
+  flex-shrink: 0;
+  font-weight: 800;
+  color: var(--brand, #5b8def);
+}
+
+.cognitive-frame__feedback {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(121, 146, 224, 0.3));
+}
+
+.cognitive-frame__feedback--ok {
+  border-color: rgba(74, 222, 128, 0.35);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.cognitive-frame__feedback--no {
+  border-color: rgba(244, 63, 94, 0.35);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.cognitive-frame__feedback-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #dce7ff;
+  font-weight: 500;
+}
+
+.cognitive-frame__reflection {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(121, 146, 224, 0.22);
+}
+
+.cognitive-frame__reflection-prompt {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 650;
+  color: #e8eeff;
+  text-align: center;
+}
+
+.cognitive-frame__reflection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.cognitive-frame__reflection-btn {
+  min-width: 132px;
+  transition:
+    box-shadow 0.22s ease,
+    transform 0.18s ease,
+    border-color 0.2s ease;
+}
+
+.cognitive-frame__reflection-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cognitive-frame__reflection-btn--yes:hover {
+  box-shadow: 0 0 22px rgba(74, 222, 128, 0.35);
+}
+
+.cognitive-frame__reflection-btn--confused:hover {
+  box-shadow: 0 0 18px rgba(139, 92, 246, 0.28);
+}
+
+.cognitive-frame__clarification {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.cognitive-frame__clarification-text {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #dce7ff;
+}
+
+.cognitive-frame__clarification-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.cognitive-frame__clarification-continue {
+  min-width: 160px;
+  transition: box-shadow 0.22s ease, transform 0.18s ease;
+}
+
+.cognitive-frame__clarification-continue:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(91, 141, 239, 0.35);
+}
+
+.la-frame-shell {
+  position: relative;
+  z-index: 5;
+  padding: 16px;
+  min-height: 360px;
+}
+
+.la-frame-shell__complete {
+  text-align: center;
+  padding: 48px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.la-frame-shell__complete h2 {
+  color: #4ade80;
+  margin-bottom: 12px;
+}

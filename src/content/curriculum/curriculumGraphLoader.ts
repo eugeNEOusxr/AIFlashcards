@@ -7,83 +7,57 @@ import type {
   GraphQuestionMcq,
   GraphQuestionNumeric,
   GraphQuestionTrueFalse,
-  LessonPhase,
 } from "./graphTypes";
+import { normalizeImportQuestion } from "../import/normalize";
+import type { ImportQuestionRaw } from "../import/types";
+import { ensureStableQuestionId } from "../stableQuestionId";
 import { physicsV1 } from "./physics_v1";
-import {
-  inferPhaseFromIndex,
-  resolveQuestionType,
-  sortQuestionsByPhase,
-} from "../../engine/questionTypes";
+import { sortQuestionsByPhase } from "../../engine/questionTypes";
 
-function isTrueFalse(q: GraphQuestion): q is GraphQuestionTrueFalse {
-  return q.questionType === "TRUE_FALSE";
-}
+const LEGACY_QUESTION_NAMESPACE: Record<string, string> = {
+  "lesson-1-force": "physics.motion.force",
+  "lesson-2-contact": "physics.motion.contact",
+};
 
-function isNumeric(q: GraphQuestion): q is GraphQuestionNumeric {
-  return q.questionType === "NUMERIC_INPUT";
-}
-
-function visualBehaviorFromTag(
-  tag?: string
-): LessonQuestion["visualBehavior"] | undefined {
-  if (!tag) return undefined;
-  if (tag.includes("collision") || tag.includes("bowling")) {
-    return {
-      focusObject: tag,
-      highlightEffect: "impact_pulse",
-      motionOverlay: "collision_lines",
-      motifs: ["contact-ripple", "push-force-arrows"],
-    };
+function lessonQuestionNamespace(node: CurriculumLessonNode): string {
+  if (node.legacyLessonId && LEGACY_QUESTION_NAMESPACE[node.legacyLessonId]) {
+    return LEGACY_QUESTION_NAMESPACE[node.legacyLessonId];
   }
-  if (tag.includes("magnet")) {
-    return { focusObject: tag, motifs: ["magnet-arcs", "field-lines"] };
-  }
-  if (tag.includes("gravity")) {
-    return { focusObject: tag, motifs: ["gravity-pull", "gravity-field"] };
-  }
-  return { focusObject: tag, motifs: ["force-arrows", "motion-lines"] };
+  const slug = node.id.replace(/^lesson\.lesson_/, "").replace(/_/g, ".");
+  return `physics.motion.${slug}`;
 }
 
-function detectGraphKind(q: GraphQuestion): "MCQ" | "TRUE_FALSE" | "NUMERIC_INPUT" {
-  if (isTrueFalse(q)) return "TRUE_FALSE";
-  if (isNumeric(q)) return "NUMERIC_INPUT";
-  return "MCQ";
-}
-
-function graphQuestionToLesson(
+function graphQuestionToImportRaw(
   q: GraphQuestion,
-  index: number,
-  total: number
-): LessonQuestion {
-  const phase: LessonPhase = q.phase ?? inferPhaseFromIndex(index, total);
-  const detected = detectGraphKind(q);
-  const questionType = q.questionType
-    ? resolveQuestionType(phase, q.questionType)
-    : detected;
-  const base = {
-    id: q.id,
+  namespace: string,
+  index: number
+): ImportQuestionRaw {
+  const base: ImportQuestionRaw = {
+    id: ensureStableQuestionId(namespace, index, q.id),
     prompt: q.prompt,
     explanation: q.explanation,
-    phase,
-    questionType,
+    phase: q.phase,
+    questionType: q.questionType,
     difficulty: q.difficulty,
     conceptTags: q.conceptTags,
-    visualBehavior: q.visualBehavior ?? visualBehaviorFromTag(q.visualTag),
+    visualTag: q.visualTag,
     reinforcement: q.reinforcement,
+    teachingBlocks: q.teachingBlocks,
+    reinforcementPrompt: q.reinforcementPrompt,
   };
 
-  if (questionType === "TRUE_FALSE" && isTrueFalse(q)) {
-    return { ...base, questionType: "TRUE_FALSE", correctAnswer: q.correctAnswer };
+  if (q.questionType === "TRUE_FALSE") {
+    const tf = q as GraphQuestionTrueFalse;
+    return { ...base, questionType: "TRUE_FALSE", correctAnswer: tf.correctAnswer };
   }
-
-  if (questionType === "NUMERIC_INPUT" && isNumeric(q)) {
+  if (q.questionType === "NUMERIC_INPUT") {
+    const num = q as GraphQuestionNumeric;
     return {
       ...base,
       questionType: "NUMERIC_INPUT",
-      correctValue: q.correctValue,
-      unit: q.unit,
-      tolerance: q.tolerance,
+      correctValue: num.correctValue,
+      unit: num.unit,
+      tolerance: num.tolerance,
     };
   }
 
@@ -96,14 +70,21 @@ function graphQuestionToLesson(
   };
 }
 
+function graphQuestionsToLesson(node: CurriculumLessonNode): LessonQuestion[] {
+  const total = node.questions.length;
+  const namespace = lessonQuestionNamespace(node);
+  return sortQuestionsByPhase(
+    node.questions.map((q, i) =>
+      normalizeImportQuestion(graphQuestionToImportRaw(q, namespace, i), i, total)
+    )
+  );
+}
+
 /** Map graph lesson node → runtime Lesson (existing engine contract). */
 export function lessonFromGraphNode(node: CurriculumLessonNode): Lesson {
   const anchorMotif =
     node.scene.persistentAnchor.objectId === "bowling_ball" ? "bowling-ball" : "hockey-puck";
-  const total = node.questions.length;
-  const questions = sortQuestionsByPhase(
-    node.questions.map((q, i) => graphQuestionToLesson(q, i, total))
-  );
+  const questions = graphQuestionsToLesson(node);
 
   return {
     id: node.legacyLessonId,

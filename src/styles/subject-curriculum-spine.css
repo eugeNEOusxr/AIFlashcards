@@ -1,0 +1,236 @@
+/* Unified Physics Chapter 1 — one continuously growing scrollable map */
+
+.la-app--layer-field .la-header {
+  display: none;
+}
+
+.la-app--layer-field .fx-ambient {
+  opacity: 0.12;
+}
+
+.la-app--curriculum-map {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+
+.la-app--curriculum-map .la-header {
+  flex-shrink: 0;
+  margin-bottom: 6px;
+  padding-bottom: 10px;
+}
+
+.world-highway--curriculum-spine {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+.world-highway--curriculum-spine .world-highway__head {
+  flex-shrink: 0;
+}
+
+.world-highway--curriculum-spine .world-highway__legend {
+  flex-shrink: 0;
+  padding-bottom: 8px;
+}
+
+/* Middle layer — only this region scrolls; canvas grows with the path */
+.curriculum-spine-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.world-map-scroll--curriculum-spine {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  isolation: isolate;
+  scroll-behavior: smooth;
+  background: #060910;
+}
+
+.curriculum-spine-intro {
+  position: relative;
+  z-index: 5;
+  padding: 4px 20px 16px;
+  pointer-events: none;
+}
+
+.curriculum-spine-intro .world-title {
+  margin: 4px 0 0;
+}
+
+.la-lesson-shell--layer-field {
+  position: relative;
+  z-index: 2;
+}
+
+.la-lesson-shell--layer-field .map-layer-nav {
+  position: relative;
+  margin: 0 0 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(121, 146, 224, 0.15);
+}
+
+/* One tall document — height driven by --map-height */
+.world-map-canvas--curriculum-spine {
+  position: relative;
+  width: min(var(--map-width, 520px), 100%);
+  max-width: 520px;
+  min-height: var(--map-height, 2000px);
+  height: var(--map-height, 2000px);
+  margin: 0 auto;
+  padding-bottom: 0;
+  perspective: 1200px;
+}
+
+.world-map-canvas--curriculum-spine {
+  position: relative;
+}
+
+.world-map-canvas--curriculum-spine .cmap-env {
+  z-index: 0;
+}
+
+.world-map-canvas--curriculum-spine .world-map-canvas__terrain {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: var(--map-height, 2000px);
+  height: var(--map-height, 2000px);
+  overflow: visible;
+}
+
+.world-map-canvas--curriculum-spine .world-map-node--entity {
+  z-index: 5;
+}
+
+.world-map-canvas--curriculum-spine .pathway-tunnels {
+  height: var(--map-height, 2000px);
+  min-height: var(--map-height, 2000px);
+}
+
+.world-map-canvas--curriculum-spine .world-map-node--entity {
+  width: min(var(--map-node-width, 200px), 42vw);
+}
+
+.world-map-canvas--curriculum-spine .world-map-node--lane {
+  right: auto;
+  transform-origin: top center;
+}
+
+.curriculum-chapter-label {
+  position: absolute;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  max-width: min(220px, 36vw);
+}
+
+.curriculum-chapter-label__title {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.88);
+}
+
+.curriculum-chapter-label__sub {
+  display: block;
+  font-size: 0.65rem;
+  color: rgba(148, 163, 184, 0.75);
+  margin-top: 2px;
+}
+
+/* No bottom fog — it made the path look cut off */
+.world-map-canvas--curriculum-spine .world-map-canvas__depth-fog {
+  display: none;
+}
+
+.world-map-canvas--curriculum-spine .world-map-canvas__horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--map-height, 2000px) - 56px);
+  bottom: auto;
+  margin: 0;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+/* Physical entities — glow fields, no card borders */
+.world-map-canvas--curriculum-spine .module-node {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  min-height: 152px;
+}
+
+.world-map-canvas--curriculum-spine .module-node__content {
+  border: none;
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 30%,
+    rgba(12, 22, 42, 0.72),
+    rgba(6, 10, 20, 0.35) 70%,
+    transparent
+  );
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  padding: 14px 16px 18px;
+}
+
+.world-map-canvas--curriculum-spine .module-node--active .module-node__content {
+  box-shadow:
+    0 0 36px color-mix(in srgb, var(--biome-accent, #22d3ee) 40%, transparent),
+    inset 0 0 24px rgba(34, 211, 238, 0.08);
+}
+
+.world-map-canvas--curriculum-spine .module-node--done .module-node__content {
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+}
+
+.world-map-canvas--curriculum-spine .pathway-map-node {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.55;
+  filter: saturate(0.5);
+}
+
+.world-map-canvas--curriculum-spine .pathway-map-node__content {
+  border: none;
+  background: radial-gradient(
+    ellipse 100% 70% at 50% 40%,
+    rgba(20, 16, 32, 0.5),
+    transparent 72%
+  );
+}
+
+.world-map-canvas--curriculum-spine .world-map-node--gate {
+  opacity: calc(1 - var(--node-fog, 0) * 0.5);
+}
+
+.world-map-canvas--curriculum-spine .world-progress-entity {
+  z-index: 40;
+}

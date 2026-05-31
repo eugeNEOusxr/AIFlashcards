@@ -1,4 +1,6 @@
 import type { PhaseMode } from "../content/curriculumTypes";
+import type { SessionMode } from "../content/lessonTeachFlow";
+import type { CurrentQuestionState } from "../engine/questionExecution";
 import type { NavScreen, PathwayId } from "../world/types";
 import type { ReinforcementSource, SignalEvent, UnderstandingSignal } from "../cognitive/types";
 
@@ -10,9 +12,14 @@ export type SessionPathwaySlice = {
   currentQuestionIndex: number;
   correctAnswersPerLesson: number;
   currentMode: PhaseMode;
-  selectedAnswerIndex: number | null;
-  submittedNumericValue: number | null;
-  lastAnswerCorrect: boolean | null;
+  /** Index within current question's teachingBlocks (legacy non-scripted lessons) */
+  teachStepIndex: number;
+  /** Strict scripted sequence index (scripted lessons only) */
+  lessonStepIndex: number;
+  /** Learn = teach-first; Practice = question → answer only */
+  sessionMode: SessionMode;
+  /** Single source of truth for in-question flow */
+  questionState: CurrentQuestionState;
   chapterComplete: boolean;
   maxUnlockedLessonIndex: number;
 };

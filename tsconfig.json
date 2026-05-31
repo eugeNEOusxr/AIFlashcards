@@ -15,5 +15,15 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "src/content/physicsChapter1.ts",
+    "src/content/energyChapter1.ts",
+    "src/content/electricityChapter1.ts",
+    "src/content/wavesChapter1.ts",
+    "src/content/thermodynamicsChapter1.ts",
+    "src/content/legacyMcq.ts",
+    "src/content/modules/physicsMotion02.ts",
+    "src/content/moduleRegistry.ts"
+  ]
 }

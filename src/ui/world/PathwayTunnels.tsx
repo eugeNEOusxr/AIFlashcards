@@ -18,6 +18,10 @@ type Props = {
   gradientId: string;
   mapHeight: number;
   layoutPreset?: MapLayoutPreset;
+  /** When set, draws tunnels only along these anchors (e.g. per-chapter column). */
+  tunnelPoints?: { x: number; y: number }[];
+  /** Column segments: connect moduleStates[i] → moduleStates[i+1] without a hub start. */
+  columnMode?: boolean;
 };
 
 /** Locked destinations shut tunnels off; unlocked/active/done engage energy flow. */
@@ -51,18 +55,29 @@ export function PathwayTunnels({
   gradientId,
   mapHeight,
   layoutPreset = "pathway",
+  tunnelPoints,
+  columnMode = false,
 }: Props) {
   const mapWidth = worldMapWidth(layoutPreset);
   const cfg = layoutConfig(layoutPreset);
   const ts = cfg.tunnelStrokeScale;
-  const points = useMemo(() => serpentinePoints(moduleCount, layoutPreset), [moduleCount, layoutPreset]);
+  const points = useMemo(
+    () => tunnelPoints ?? serpentinePoints(moduleCount, layoutPreset),
+    [tunnelPoints, moduleCount, layoutPreset]
+  );
 
   const segments = useMemo(() => {
     const activeIndex = moduleStates.findIndex((s) => s === "active");
     const out: { d: string; state: TunnelSegmentState; key: string }[] = [];
     for (let i = 0; i < points.length - 1; i++) {
-      const fromState: ModuleProgressState = i === 0 ? "unlocked" : (moduleStates[i - 1] ?? "locked");
-      const toState: ModuleProgressState = moduleStates[i] ?? "locked";
+      const fromState: ModuleProgressState = columnMode
+        ? (moduleStates[i] ?? "locked")
+        : i === 0
+          ? "unlocked"
+          : (moduleStates[i - 1] ?? "locked");
+      const toState: ModuleProgressState = columnMode
+        ? (moduleStates[i + 1] ?? "locked")
+        : (moduleStates[i] ?? "locked");
       // Lighting rule:
       // - behind (<= active module): always show a "live" tunnel (never fully off)
       // - ahead (> active module): dim/ghost, even if modules are unlocked
@@ -78,9 +93,9 @@ export function PathwayTunnels({
       });
     }
     return out;
-  }, [points, moduleStates, layoutPreset]);
+  }, [points, moduleStates, layoutPreset, columnMode]);
 
-  const blurAmount = layoutPreset === "subject" ? 4 : 5;
+  const blurAmount = layoutPreset === "subject" || layoutPreset === "curriculum" ? 4 : 5;
 
   return (
     <svg

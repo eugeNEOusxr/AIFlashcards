@@ -39,10 +39,22 @@ export type LessonSceneGraph = {
 export type QuestionType = "MCQ" | "TRUE_FALSE" | "NUMERIC_INPUT";
 export type LessonPhase = "understanding" | "application" | "mastery";
 
+export type GraphTeachingBlock = {
+  type: "TEACH";
+  kind?: "concept" | "visual" | "explain";
+  text: string;
+  visualTag?: string;
+  title?: string;
+  visualEvents?: string[];
+  paceHint?: string;
+};
+
 export type GraphQuestionBase = {
   id: string;
   prompt: string;
   explanation?: string;
+  teachingBlocks?: GraphTeachingBlock[];
+  reinforcementPrompt?: string;
   /** Internal lesson layer — drives allowed question types. */
   phase?: LessonPhase;
   questionType?: QuestionType;

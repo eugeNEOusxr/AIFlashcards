@@ -1,19 +1,14 @@
 import type { Lesson } from "./curriculumTypes";
-import { electricityChapter1 } from "./electricityChapter1";
-import { energyChapter1 } from "./energyChapter1";
-import { physicsChapter1 } from "./physicsChapter1";
 import type { PathwayId } from "../world/types";
 
-const chapters: Partial<Record<PathwayId, Lesson[]>> = {
-  "motion-forces": physicsChapter1,
-  energy: energyChapter1,
-  electricity: electricityChapter1,
-};
-
-export function getChapterForPathway(pathwayId: PathwayId): Lesson[] {
-  return chapters[pathwayId] ?? [];
+/**
+ * Frame-only app: legacy chapter arrays are not loaded.
+ * Do not import physicsChapter1 / energyChapter1 / etc. here.
+ */
+export function getChapterForPathway(_pathwayId: PathwayId): Lesson[] {
+  return [];
 }
 
-export function pathwayHasChapter(pathwayId: PathwayId): boolean {
-  return (chapters[pathwayId]?.length ?? 0) > 0;
+export function pathwayHasChapter(_pathwayId: PathwayId): boolean {
+  return false;
 }

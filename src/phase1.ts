@@ -7,6 +7,8 @@ export const PHASE1 = {
   screens: ["HOME", "SUBJECT", "LESSON"] as const,
   /** In-lesson extras disabled for stability */
   showCognitiveFeedbackBar: false,
+  /** Post-explanation reflection checkpoint (replaces static feedback bar) */
+  showCognitiveCheckpoint: true,
   showAIGuideOrb: false,
   showCuriosityNodes: true,
 } as const;

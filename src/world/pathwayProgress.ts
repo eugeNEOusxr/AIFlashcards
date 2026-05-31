@@ -99,5 +99,23 @@ export function pathwayProgressForPathway(
     return "unlocked";
   }
 
+  const waves = sliceFor("waves", engine, getSlice);
+  const thermo = sliceFor("thermodynamics", engine, getSlice);
+
+  if (pathwayId === "waves") {
+    if (!isPathwayCompleted("electricity") && !electricity.chapterComplete) return "locked";
+    if (engine.pathwayId === "waves" && !engine.chapterComplete) return "active";
+    if (isPathwayCompleted("waves") || waves.chapterComplete) return "done";
+    return "unlocked";
+  }
+
+  if (pathwayId === "thermodynamics") {
+    if (!isPathwayCompleted("electricity") && !electricity.chapterComplete) return "locked";
+    if (!waves.chapterComplete && !isPathwayCompleted("waves")) return "locked";
+    if (engine.pathwayId === "thermodynamics" && !engine.chapterComplete) return "active";
+    if (isPathwayCompleted("thermodynamics") || thermo.chapterComplete) return "done";
+    return "unlocked";
+  }
+
   return "locked";
 }

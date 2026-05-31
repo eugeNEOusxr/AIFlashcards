@@ -1,7 +1,21 @@
 import type { LessonSceneGraph, CuriosityNode, MasteryRules, MemoryHooks } from "./curriculum/graphTypes";
 import type { LessonVisualTheme } from "../visuals/types";
 
-export type PhaseMode = "TEACH" | "ASK" | "FEEDBACK" | "ADVANCE";
+export type PhaseMode = "TEACH" | "REINFORCE" | "ASK" | "FEEDBACK" | "ADVANCE";
+
+export type TeachBlockKind = "concept" | "visual" | "explain";
+
+export type TeachingBlock = {
+  type: "TEACH";
+  kind?: TeachBlockKind;
+  text: string;
+  visualTag?: string;
+  title?: string;
+  /** Scripted overlay activations — renderer fades these in without remounting anchor */
+  visualEvents?: string[];
+  /** Optional short hint shown only when visualEvents are active */
+  paceHint?: string;
+};
 
 export type LessonPhase = "understanding" | "application" | "mastery";
 export type QuestionType = "MCQ" | "TRUE_FALSE" | "NUMERIC_INPUT";
@@ -28,8 +42,14 @@ export type QuestionCommon = {
   questionType: QuestionType;
   difficulty?: 1 | 2 | 3;
   conceptTags?: string[];
+  /** Dataset / graph hint for visuals — resolved to visualBehavior at import time */
+  visualTag?: string;
   visualBehavior?: QuestionVisualBehavior;
   reinforcement?: QuestionReinforcement;
+  /** Learn Mode — shown before this question (not used in Practice Mode) */
+  teachingBlocks?: TeachingBlock[];
+  /** Short bridge from teaching → question */
+  reinforcementPrompt?: string;
 };
 
 export type McqLessonQuestion = QuestionCommon & {

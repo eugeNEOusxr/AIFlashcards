@@ -1,8 +1,9 @@
 import { subjects } from "../../world/physicsWorld";
-import type { SubjectId } from "../../world/types";
-import { resetAllLearningProgress } from "../../memory/memoryStore";
+import type { NavScreen, SubjectId } from "../../world/types";
+import { resetAllProgress } from "../../memory/resetProgress";
 import { WorldEnvironmentField } from "./WorldEnvironmentField";
 import { SubjectWorldEntity, type SubjectEntitySlot } from "./SubjectWorldEntity";
+import { MapLayerNav } from "./MapLayerNav";
 
 const ENTITY_SLOTS: Record<SubjectId, SubjectEntitySlot> = {
   physics: {
@@ -39,9 +40,10 @@ const TAGLINES: Record<SubjectId, string> = {
 
 type Props = {
   onEnterSubject: (subjectId: SubjectId) => void;
+  onNavigate?: (screen: NavScreen) => void;
 };
 
-export function SubjectWorldScreen({ onEnterSubject }: Props) {
+export function SubjectWorldScreen({ onEnterSubject, onNavigate }: Props) {
   const handleResetProgress = () => {
     if (
       !window.confirm(
@@ -50,7 +52,7 @@ export function SubjectWorldScreen({ onEnterSubject }: Props) {
     ) {
       return;
     }
-    resetAllLearningProgress();
+    resetAllProgress();
     window.location.reload();
   };
 
@@ -58,39 +60,48 @@ export function SubjectWorldScreen({ onEnterSubject }: Props) {
     <section className="subject-world" aria-label="Knowledge worlds">
       <WorldEnvironmentField />
 
-      <header className="subject-world__header">
-        <p className="subject-world__kicker">Knowledge space</p>
-        <h2 className="subject-world__title">Choose your atmospheric zone</h2>
-        <p className="subject-world__lead">
-          Hover a zone to feel its field — enter to open the progression map and lessons.
-        </p>
-      </header>
+      {/* Foreground layer — scrolls independently over the living background */}
+      <div className="subject-world__scroll" role="region" aria-label="Subject zones">
+        {onNavigate ? (
+          <div className="subject-world__nav">
+            <MapLayerNav screen={{ kind: "HOME" }} onNavigate={onNavigate} moodLabel="Knowledge space" />
+          </div>
+        ) : null}
 
-      <div className="subject-world__canvas">
-        {subjects.map((s) => (
-          <SubjectWorldEntity
-            key={s.id}
-            subjectId={s.id as SubjectId}
-            label={s.label}
-            tagline={TAGLINES[s.id as SubjectId]}
-            slot={ENTITY_SLOTS[s.id as SubjectId]}
-            available={s.available}
-            onEnter={() => {
-              if (s.available) onEnterSubject(s.id as SubjectId);
-            }}
-          />
-        ))}
+        <header className="subject-world__header">
+          <p className="subject-world__kicker">Knowledge space</p>
+          <h2 className="subject-world__title">Choose your atmospheric zone</h2>
+          <p className="subject-world__lead">
+            Hover a zone to feel its field — enter to open the progression map and lessons.
+          </p>
+        </header>
+
+        <div className="subject-world__canvas">
+          {subjects.map((s) => (
+            <SubjectWorldEntity
+              key={s.id}
+              subjectId={s.id as SubjectId}
+              label={s.label}
+              tagline={TAGLINES[s.id as SubjectId]}
+              slot={ENTITY_SLOTS[s.id as SubjectId]}
+              available={s.available}
+              onEnter={() => {
+                if (s.available) onEnterSubject(s.id as SubjectId);
+              }}
+            />
+          ))}
+        </div>
+
+        <footer className="subject-world__footer">
+          <button
+            type="button"
+            className="subject-world__utility subject-world__utility--muted"
+            onClick={handleResetProgress}
+          >
+            Reset progress
+          </button>
+        </footer>
       </div>
-
-      <footer className="subject-world__footer">
-        <button
-          type="button"
-          className="subject-world__utility subject-world__utility--muted"
-          onClick={handleResetProgress}
-        >
-          Reset progress
-        </button>
-      </footer>
     </section>
   );
 }

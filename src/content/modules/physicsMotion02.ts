@@ -349,5 +349,5 @@ export const contactForcesLesson: Lesson = {
     correct: "Nice. You separated touch-based interactions from distance-based field forces.",
     incorrect: "Rule of thumb: if objects must touch (or connect through a rope/surface), think contact. If it works across a gap, think field.",
   },
-  questions: phasedMcqQuestions(rawQuestions),
+  questions: phasedMcqQuestions("physics.motion.contact", rawQuestions),
 };

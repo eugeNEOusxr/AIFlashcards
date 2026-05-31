@@ -16,5 +16,5 @@ export {
   toProgressionSnapshot,
 } from "./memoryStore";
 export { pickNextQuestionIndex } from "./questionSelector";
-export { loadInitialNavScreen, moduleIdForLesson } from "./sessionRestore";
+export { migrateToFrameOnlyStorage } from "./migrateFrameOnly";
 export { normalizeConceptId, getWeakConceptIds, scoreToTier } from "./conceptMemory";

@@ -33,9 +33,8 @@ export const physicsChapter1: Lesson[] = [
       correct: "Excellent. You identified inertia: motion state persists without net external force.",
       incorrect: "Remember: objects do not naturally stop; changes in motion require external force.",
     },
-    questions: phasedMcqQuestions([
+    questions: phasedMcqQuestions("physics.motion.inertia", [
       {
-        id: "q9",
         prompt: "An object in motion will:",
         options: ["Stop automatically", "Keep moving unless acted on", "Speed up constantly", "Change direction randomly"],
         correctIndex: 1,
@@ -76,9 +75,8 @@ export const physicsChapter1: Lesson[] = [
       correct: "Strong. You linked acceleration to both applied force and object mass.",
       incorrect: "Ground in equation form: \(a = F/m\). More mass means less acceleration for same force.",
     },
-    questions: phasedMcqQuestions([
+    questions: phasedMcqQuestions("physics.motion.secondlaw", [
       {
-        id: "q13",
         prompt: "F = ma means:",
         options: [
           "Force equals mass times acceleration",
@@ -124,9 +122,8 @@ export const physicsChapter1: Lesson[] = [
       correct: "Great transfer. You applied abstract laws to real-world motion.",
       incorrect: "Translate scenario to model: identify mass, direction of force, and resulting acceleration change.",
     },
-    questions: phasedMcqQuestions([
+    questions: phasedMcqQuestions("physics.motion.applications", [
       {
-        id: "q17",
         prompt: "Why does a heavy cart require more effort?",
         options: ["More color", "More mass resists motion", "Less gravity", "Less friction"],
         correctIndex: 1,

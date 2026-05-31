@@ -1,10 +1,26 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
-type Tilt = { rx: number; ry: number };
-
+/** Pointer tilt via direct DOM transform — no React state on move. */
 export function useSubjectTileParallax(enabled: boolean) {
   const ref = useRef<HTMLButtonElement>(null);
-  const [tilt, setTilt] = useState<Tilt>({ rx: 0, ry: 0 });
+  const visualRef = useRef<HTMLSpanElement | null>(null);
+
+  const setVisualRef = useCallback((el: HTMLSpanElement | null) => {
+    visualRef.current = el;
+  }, []);
+
+  const applyTilt = useCallback(
+    (rx: number, ry: number) => {
+      const el = visualRef.current;
+      if (!el) return;
+      if (!enabled || (rx === 0 && ry === 0)) {
+        el.style.transform = "";
+        return;
+      }
+      el.style.transform = `translate3d(0, 0, 0) rotateX(${rx}deg) rotateY(${ry}deg)`;
+    },
+    [enabled]
+  );
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLButtonElement>) => {
@@ -12,20 +28,14 @@ export function useSubjectTileParallax(enabled: boolean) {
       const rect = ref.current.getBoundingClientRect();
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
-      setTilt({ rx: -y * 5.5, ry: x * 7 });
+      applyTilt(-y * 5.5, x * 7);
     },
-    [enabled]
+    [enabled, applyTilt]
   );
 
   const onPointerLeave = useCallback(() => {
-    setTilt({ rx: 0, ry: 0 });
-  }, []);
+    applyTilt(0, 0);
+  }, [applyTilt]);
 
-  const visualStyle = enabled
-    ? {
-        transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) translateZ(12px)`,
-      }
-    : undefined;
-
-  return { ref, visualStyle, onPointerMove, onPointerLeave };
-}
+  return { ref, setVisualRef, onPointerMove, onPointerLeave };
+};

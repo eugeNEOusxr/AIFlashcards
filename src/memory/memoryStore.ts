@@ -18,8 +18,10 @@ import type {
   AnswerRecord,
   PathwayCurriculumState,
 } from "./types";
-import { moduleIdForLesson } from "./sessionRestore";
+import { getSpineSuccessor } from "../world/physicsCurriculumSpine";
 import type { UnderstandingSignal } from "../cognitive/types";
+import { resetAllProgress } from "./resetProgress";
+import { initialQuestionState } from "../engine/questionExecution";
 
 const MEMORY_KEY = "cls:learning-memory:v1";
 const LEGACY_PROGRESSION_KEY = "cls:progression:v1";
@@ -37,9 +39,10 @@ export function defaultPathwaySlice(): SessionPathwaySlice {
     currentQuestionIndex: 0,
     correctAnswersPerLesson: 0,
     currentMode: "TEACH",
-    selectedAnswerIndex: null,
-    submittedNumericValue: null,
-    lastAnswerCorrect: null,
+    teachStepIndex: 0,
+    lessonStepIndex: 0,
+    sessionMode: "learn",
+    questionState: initialQuestionState(null),
     chapterComplete: false,
     maxUnlockedLessonIndex: 0,
   };
@@ -205,7 +208,7 @@ export function hydrateSessionPathways(
     const existing = merged[pid] ?? defaultPathwaySlice();
     merged[pid] = {
       ...existing,
-      submittedNumericValue: existing.submittedNumericValue ?? null,
+      questionState: existing.questionState ?? initialQuestionState(null),
       maxUnlockedLessonIndex: Math.max(existing.maxUnlockedLessonIndex, cur.maxUnlockedLessonIndex),
       /** Session never hard-locks — curriculum tracks completion separately */
       chapterComplete: false,
@@ -223,7 +226,7 @@ export function hydrateSessionPathways(
     }
     merged[pid] = {
       ...slice,
-      submittedNumericValue: slice.submittedNumericValue ?? null,
+      questionState: slice.questionState ?? initialQuestionState(null),
       maxUnlockedLessonIndex: maxUnlocked,
       /** Completion is tracked in curriculum; session never hard-locks replay. */
       chapterComplete: false,
@@ -405,9 +408,6 @@ export function markLessonCompletedMemory(
   pathwayId: PathwayId,
   lessonIndex?: number
 ): LearningMemory {
-  const moduleId =
-    lessonIndex !== undefined ? moduleIdForLesson(pathwayId, lessonIndex) : undefined;
-
   return updateMemory((mem) => {
     if (!mem.curriculum.completedLessonIds.includes(lessonId)) {
       mem.curriculum.completedLessonIds = [...mem.curriculum.completedLessonIds, lessonId];
@@ -417,9 +417,6 @@ export function markLessonCompletedMemory(
       chapterComplete: false,
       completedModuleIds: [],
     };
-    if (moduleId && !path.completedModuleIds.includes(moduleId)) {
-      path.completedModuleIds = [...path.completedModuleIds, moduleId];
-    }
     if (lessonIndex !== undefined) {
       path.maxUnlockedLessonIndex = Math.max(path.maxUnlockedLessonIndex, lessonIndex + 1);
     }
@@ -461,6 +458,16 @@ export function markPathwayCompletedMemory(
       slice.chapterComplete = true;
       slice.maxUnlockedLessonIndex = Math.max(slice.maxUnlockedLessonIndex, lastIndex);
     }
+
+    const successor = getSpineSuccessor(pathwayId);
+    if (successor) {
+      const succSlice = mem.session.pathways[successor.pathwayId] ?? defaultPathwaySlice();
+      mem.session.pathways[successor.pathwayId] = {
+        ...succSlice,
+        chapterComplete: false,
+        maxUnlockedLessonIndex: Math.max(succSlice.maxUnlockedLessonIndex, successor.lessonIndex),
+      };
+    }
   });
 }
 
@@ -489,10 +496,7 @@ export function reopenPathwayForReview(pathwayId: PathwayId, lessonCount: number
 
 /** Full local reset — for dev and "start over" in settings. */
 export function resetAllLearningProgress(): void {
-  if (typeof localStorage === "undefined") return;
-  localStorage.removeItem(MEMORY_KEY);
-  localStorage.removeItem(LEGACY_PROGRESSION_KEY);
-  localStorage.removeItem(LEGACY_PATHWAY_KEY);
+  resetAllProgress();
 }
 
 export function isPathwayCompletedMemory(pathwayId: PathwayId): boolean {

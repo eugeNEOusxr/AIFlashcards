@@ -5,8 +5,9 @@
   "description": "CLS — Progressive cognitive learning environment (PWA)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "dev": "node scripts/assert-active-root.mjs && vite",
+    "dev:clean": "node scripts/assert-active-root.mjs && node -e \"require('fs').rmSync('node_modules/.vite',{recursive:true,force:true})\" && vite",
+    "build": "node scripts/assert-active-root.mjs && tsc --noEmit && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

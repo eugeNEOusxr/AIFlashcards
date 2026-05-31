@@ -14,10 +14,28 @@
 .la-lesson-body {
   flex: 1;
   min-height: 0;
+  position: relative;
+  z-index: 6;
 }
 
 .la-lesson-center {
   min-height: 200px;
+}
+
+.la-lesson-step-host {
+  position: relative;
+  z-index: 8;
+}
+
+.la-primary--step-continue {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.la-card--scripted-question,
+.la-card--scripted-blocked {
+  position: relative;
+  z-index: 9;
 }
 
 /* —— Concept Visual Chamber (educational anchor) —— */
@@ -1158,4 +1176,120 @@
   --accent-magenta: #ec4899;
   --accent-violet: #a78bfa;
   --accent-teal: #2dd4bf;
+}
+
+/* —— Scene layer separation: persistent anchor + teach + question overlays —— */
+.lesson-visual-scene__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lesson-visual-scene__layer--teach {
+  z-index: 4;
+}
+
+.lesson-visual-scene__layer--question {
+  z-index: 5;
+}
+
+.lesson-visual-scene__teach-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.lesson-visual-scene__force-overlays--teach .lesson-force-overlay,
+.lesson-visual-scene__force-overlays--question .lesson-force-overlay {
+  opacity: 1;
+}
+
+.lesson-teach-fx {
+  position: absolute;
+  pointer-events: none;
+}
+
+.lesson-teach-fx--pathway-glow {
+  inset: 0;
+  background: radial-gradient(ellipse 80% 40% at 50% 85%, rgba(34, 211, 238, 0.22), transparent 70%);
+  animation: teachPathwayGlow 2.8s ease-in-out infinite;
+}
+
+.lesson-teach-fx--motion-trail {
+  left: 12%;
+  right: 12%;
+  bottom: 28%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.55), transparent);
+  animation: teachMotionTrail 1.6s ease-in-out infinite;
+}
+
+.lesson-teach-fx--interaction-glow {
+  left: 50%;
+  bottom: 32%;
+  width: 120px;
+  height: 120px;
+  margin-left: -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.35), transparent 70%);
+  animation: teachInteractionGlow 2.2s ease-in-out infinite;
+}
+
+.lesson-teach-fx--ball-rotate {
+  left: 50%;
+  bottom: 30%;
+  width: 90px;
+  height: 90px;
+  margin-left: -45px;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  animation: teachBallRotate 4s linear infinite;
+}
+
+.lesson-teach-fx--push-pulse {
+  left: 50%;
+  bottom: 34%;
+  width: 140px;
+  height: 140px;
+  margin-left: -70px;
+  border-radius: 50%;
+  border: 2px solid rgba(34, 211, 238, 0.35);
+  animation: teachPushPulse 1.8s ease-out infinite;
+}
+
+.lesson-teach-event--ball-rotate .bowling-ball-motif__sphere {
+  animation: teachAnchorNudge 4s ease-in-out infinite;
+}
+
+@keyframes teachPathwayGlow {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.75; }
+}
+
+@keyframes teachMotionTrail {
+  0%, 100% { transform: translateX(-8%); opacity: 0.4; }
+  50% { transform: translateX(8%); opacity: 1; }
+}
+
+@keyframes teachInteractionGlow {
+  0%, 100% { transform: scale(0.92); opacity: 0.5; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+@keyframes teachBallRotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes teachAnchorNudge {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes teachPushPulse {
+  0% { transform: scale(0.85); opacity: 0.9; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.lesson-visual-scene--layer-teach .lesson-visual-scene__fx .lesson-visual-scene__energy-sweep,
+.lesson-visual-scene--layer-reinforce .lesson-visual-scene__fx .lesson-visual-scene__energy-sweep {
+  display: none;
 }

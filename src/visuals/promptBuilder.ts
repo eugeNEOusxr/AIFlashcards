@@ -1,4 +1,4 @@
-import type { Lesson } from "../content/physicsChapter1";
+import type { Lesson } from "../content/curriculumTypes";
 
 /**
  * Internal prompt synthesis for future hybrid AI image generation (Option 3).
