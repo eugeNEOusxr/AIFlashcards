@@ -10,6 +10,7 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 const siblingOldProject = path.resolve(projectRoot, "..", "..", "studyassistantai02");
 
 export default defineConfig({
+  base: process.env.BASE_PATH ?? "/",
   root: projectRoot,
   server: {
     fs: {

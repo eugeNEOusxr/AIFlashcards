@@ -1,20 +1,27 @@
-# Cognitive Learning System (CLS) — MVP foundation
+# Cognitive Learning System (CLS)
 
-Mobile-first PWA foundation: **modes (visual only)**, **text selection → context actions → reflection stubs**, **localStorage** persistence, **vite-plugin-pwa** (manifest + offline precache).
+Live site: **https://cognitive-flashcard.vercel.app** (Vercel) · **https://eugeneousxr.github.io/AIFlashcards/** (GitHub Pages, after Pages is enabled)
+
+Mobile-first PWA: immersive physics world map, frame-based learning, review flashcards, localStorage persistence.
 
 ## 1. Run locally
 
 ```bash
-cd cognitive-pwa
 npm install
 npm run dev
 ```
 
 Open the URL Vite prints (usually `http://localhost:5173`).
 
-From the **repo root** (`studyassistantai/`): `npm run install:pwa` then `npm run dev` (see root `package.json`).
+## 2. Deploy
 
-## 2. Open on your phone (same Wi‑Fi / LAN)
+Pushes to `main` on GitHub auto-build via GitHub Actions (Pages) and can auto-deploy on Vercel when the repo is connected in the Vercel dashboard.
+
+```bash
+npm run build
+```
+
+## 3. Open on your phone (same Wi‑Fi / LAN)
 
 ```bash
 npm run dev -- --host 0.0.0.0
@@ -26,13 +33,13 @@ On your PC, note your LAN IP (e.g. `ipconfig` → IPv4 like `192.168.1.42`). On 
 
 **HTTPS note:** Some PWA features (e.g. install) are stricter without HTTPS; LAN HTTP is usually fine for dev testing. For production, serve over HTTPS.
 
-## 3. Install as PWA (mobile)
+## 4. Install as PWA (mobile)
 
 1. Open the app in **Chrome** (Android) or **Safari** (iOS).
 2. Use **“Install app”** / **“Add to Home Screen”** from the browser menu.
 3. Icons: manifest uses `public/icons/icon.svg`. For best store-style installs, add PNG maskable icons later.
 
-## 4. What works vs stubbed
+## 5. What works vs stubbed
 
 | Area | Status |
 |------|--------|
