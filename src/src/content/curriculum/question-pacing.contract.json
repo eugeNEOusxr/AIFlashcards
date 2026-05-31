@@ -1,0 +1,129 @@
+{
+  "$schema": "./question-pacing.contract.json",
+  "id": "curriculum.question-pacing.v1",
+  "label": "When and how questions may appear in CLS",
+  "version": 1,
+  "navigationOrder": [
+    {
+      "screen": "HOME",
+      "label": "Study Worlds",
+      "purpose": "Pick Physics, Chemistry, or Biology — nothing else loads first"
+    },
+    {
+      "screen": "SUBJECT",
+      "label": "Subject map",
+      "purpose": "Landmarks and tunnels; unlock order from curriculum.manifest landmarkFlow"
+    },
+    {
+      "screen": "FRAME_MODULE",
+      "label": "Lesson frames",
+      "purpose": "One MCQ at a time; order from frames.manifest sequenceInChapter"
+    }
+  ],
+  "contentStack": [
+    "World",
+    "Subject",
+    "Chapter",
+    "Landmark (module)",
+    "QuestionDepthLevel (1 Core, 2 Connect, 3 Apply)",
+    "QuestionContentLayer (concept | context | assessment)",
+    "Frame (single MCQ)"
+  ],
+  "filesPerSubject": {
+    "curriculum.manifest.json": "Chapter titles, pathway wiring, landmarkFlow, activeLandmarks (what is playable)",
+    "subject.frames.manifest.json": "When each frame runs: frameId, level, contentLayer, sequenceInChapter, landmarkId",
+    "subject_v1.graph.json": "Concept nodes and edges (review / future routing)",
+    "modules/*.ts (today)": "Question copy: fact, visualAid, question, answers, feedback, clarification"
+  },
+  "frameBody": {
+    "required": [
+      "id",
+      "conceptTag",
+      "title",
+      "fact",
+      "visualAid",
+      "question",
+      "answers",
+      "correctIndex",
+      "feedback.correct",
+      "feedback.incorrect",
+      "clarification.text",
+      "clarification.visualAid"
+    ],
+    "answers": {
+      "count": 4,
+      "type": "tuple",
+      "shuffleAtRuntime": true,
+      "note": "correctIndex must point at the right label; engine shuffles per frame"
+    },
+    "forbiddenPatterns": {
+      "visualAidAndFact": ["->", "=>", "→"],
+      "feedback": "Must not repeat visualAid text"
+    },
+    "oneMicroConceptPerFrame": true
+  },
+  "pacingSlots": {
+    "level": {
+      "1": { "label": "Core", "when": "First exposure to a landmark idea" },
+      "2": { "label": "Connect", "when": "Link idea to a nature scene or second example" },
+      "3": { "label": "Apply", "when": "Check understanding; often last in a module" }
+    },
+    "contentLayer": {
+      "concept": {
+        "label": "Concept",
+        "intent": "Teach one fact + picture it + ask",
+        "typicalSequence": "Early in a module (e.g. cells.01)"
+      },
+      "context": {
+        "label": "Scene",
+        "intent": "Ground the same idea outdoors; visualAid carries the scene",
+        "typicalSequence": "After first concept frame (e.g. cells.02)"
+      },
+      "assessment": {
+        "label": "Check",
+        "intent": "Verify without new jargon; often level 2+",
+        "typicalSequence": "End of module block (e.g. cells.04)"
+      }
+    }
+  },
+  "uiPhases": {
+    "description": "Controlled by frameEngine + frameDisplay — not free-form overlays",
+    "sequence": [
+      {
+        "phase": "answering",
+        "shows": ["fact", "visualAid", "question", "answers"],
+        "learnerCan": "pick one MCQ"
+      },
+      {
+        "phase": "reflection",
+        "shows": ["fact", "visualAid", "question", "answers", "feedback"],
+        "learnerCan": ["Yes, got it", "Still confused"]
+      },
+      {
+        "phase": "clarification",
+        "shows": ["fact", "visualAid", "question", "answers", "feedback", "clarification"],
+        "learnerCan": "Continue to next frame",
+        "onlyIf": "learner chose confused"
+      }
+    ],
+    "rules": [
+      "Never show clarification before reflection",
+      "Feedback must not duplicate visualAid",
+      "Answers shuffle on each frame; question text stays fixed"
+    ]
+  },
+  "modulePatterns": {
+    "fourFrameLandmark": ["concept L1", "context L1", "concept L2", "assessment L2"],
+    "fiveFrameLandmark": ["concept L1", "context L1", "concept L2", "assessment L2", "assessment L3"]
+  },
+  "exampleSlot": {
+    "frameId": "cells.01",
+    "landmarkId": "cells",
+    "moduleId": "biology.cells",
+    "level": 1,
+    "contentLayer": "concept",
+    "sequenceInChapter": 1,
+    "conceptTag": "cells-unit-of-life",
+    "bodySource": "content/frames/modules/cellsModule.ts"
+  }
+}

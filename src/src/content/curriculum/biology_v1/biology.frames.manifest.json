@@ -1,0 +1,93 @@
+{
+  "id": "biology.frames.ch1",
+  "chapterId": "biology.ch1",
+  "title": "Life in Nature",
+  "subject": "biology",
+  "pathwayId": "living-biology",
+  "modules": [
+    {
+      "landmarkId": "cells",
+      "moduleId": "biology.cells",
+      "orderInChapter": 1,
+      "title": "Cells & Life",
+      "frames": [
+        {
+          "frameId": "cells.01",
+          "conceptTag": "cells-unit-of-life",
+          "level": 1,
+          "contentLayer": "concept",
+          "sequenceInChapter": 1
+        },
+        {
+          "frameId": "cells.02",
+          "conceptTag": "cells-in-nature",
+          "level": 1,
+          "contentLayer": "context",
+          "sequenceInChapter": 2
+        },
+        {
+          "frameId": "cells.03",
+          "conceptTag": "cells-plant-animal",
+          "level": 2,
+          "contentLayer": "concept",
+          "sequenceInChapter": 3
+        },
+        {
+          "frameId": "cells.04",
+          "conceptTag": "cells-microscopic",
+          "level": 2,
+          "contentLayer": "assessment",
+          "sequenceInChapter": 4
+        }
+      ]
+    },
+    {
+      "landmarkId": "organisms",
+      "moduleId": "biology.organisms",
+      "orderInChapter": 2,
+      "title": "Living Organisms",
+      "frames": [
+        {
+          "frameId": "organisms.01",
+          "conceptTag": "organisms-living-traits",
+          "level": 1,
+          "contentLayer": "concept",
+          "sequenceInChapter": 5
+        },
+        {
+          "frameId": "organisms.02",
+          "conceptTag": "organisms-needs",
+          "level": 1,
+          "contentLayer": "context",
+          "sequenceInChapter": 6
+        },
+        {
+          "frameId": "organisms.03",
+          "conceptTag": "organisms-habitat",
+          "level": 2,
+          "contentLayer": "concept",
+          "sequenceInChapter": 7
+        },
+        {
+          "frameId": "organisms.04",
+          "conceptTag": "organisms-food-chain",
+          "level": 2,
+          "contentLayer": "assessment",
+          "sequenceInChapter": 8
+        },
+        {
+          "frameId": "organisms.05",
+          "conceptTag": "organisms-biodiversity",
+          "level": 3,
+          "contentLayer": "assessment",
+          "sequenceInChapter": 9
+        }
+      ]
+    }
+  ],
+  "comingSoonLandmarks": [
+    { "landmarkId": "habitats", "title": "Habitats" },
+    { "landmarkId": "energy-life", "title": "Energy in Life" },
+    { "landmarkId": "diversity", "title": "Biodiversity" }
+  ]
+}

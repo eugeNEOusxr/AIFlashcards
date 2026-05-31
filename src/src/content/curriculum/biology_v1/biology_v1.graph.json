@@ -1,0 +1,37 @@
+{
+  "id": "curriculum.biology_v1",
+  "version": "1.0.0",
+  "subject": "biology",
+  "defaultPathwayId": "living-biology",
+  "modules": {
+    "biology.cells": {
+      "id": "biology.cells",
+      "landmarkId": "cells",
+      "title": "Cells & Life",
+      "pathway": "living-biology",
+      "tier": "beginner",
+      "frameIds": ["cells.01", "cells.02", "cells.03", "cells.04"]
+    },
+    "biology.organisms": {
+      "id": "biology.organisms",
+      "landmarkId": "organisms",
+      "title": "Living Organisms",
+      "pathway": "living-biology",
+      "tier": "beginner",
+      "frameIds": [
+        "organisms.01",
+        "organisms.02",
+        "organisms.03",
+        "organisms.04",
+        "organisms.05"
+      ]
+    }
+  },
+  "landmarks": {
+    "cells": { "moduleId": "biology.cells", "status": "active" },
+    "organisms": { "moduleId": "biology.organisms", "status": "active" },
+    "habitats": { "status": "planned" },
+    "energy-life": { "status": "planned" },
+    "diversity": { "status": "planned" }
+  }
+}

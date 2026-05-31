@@ -1,0 +1,134 @@
+/* Directional progression energy — path-attached only */
+
+.module-tunnel-progression {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.module-tunnel-seg--next .module-tunnel-seg__tube {
+  opacity: 0.72;
+  transition: opacity 1.8s ease;
+}
+
+.module-tunnel-seg--activating .module-tunnel-seg__tube {
+  animation: module-tube-ignite 2.4s ease-out forwards;
+}
+
+@keyframes module-tube-ignite {
+  0% {
+    opacity: 0.35;
+    filter: brightness(0.85);
+  }
+  45% {
+    opacity: 0.78;
+    filter: brightness(1.08);
+  }
+  100% {
+    opacity: calc(0.92 * var(--flow-intensity, 1));
+    filter: brightness(1);
+  }
+}
+
+.module-tunnel-seg__flow-dash {
+  stroke-dasharray: 5 95;
+  stroke-dashoffset: 100;
+}
+
+.module-tunnel-seg__unlock-stroke {
+  stroke-dasharray: 8 92;
+  stroke-dashoffset: 100;
+  opacity: 0.85;
+  animation: module-unlock-stroke-travel 2.4s cubic-bezier(0.35, 0, 0.2, 1) forwards;
+}
+
+@keyframes module-unlock-stroke-travel {
+  from {
+    stroke-dashoffset: 100;
+    opacity: 0.2;
+  }
+  30% {
+    opacity: 0.95;
+  }
+  to {
+    stroke-dashoffset: 0;
+    opacity: 0.35;
+  }
+}
+
+.module-tunnel-seg__flow-particle {
+  opacity: calc(0.55 + 0.35 * var(--flow-intensity, 0.65));
+}
+
+.module-tunnel-seg--forward .module-tunnel-seg__flow-particle,
+.module-tunnel-seg--next .module-tunnel-seg__flow-particle,
+.module-tunnel-seg--activating .module-tunnel-seg__flow-particle {
+  opacity: calc(0.72 + 0.28 * var(--flow-intensity, 1));
+}
+
+.module-tunnel-seg--activating .module-tunnel-seg__tube {
+  animation: module-tube-ignite 2.4s ease-out forwards;
+}
+
+.module-tunnel-seg--forward:not(.module-tunnel-seg--activating) .module-tunnel-seg__tube {
+  animation: module-tube-breathe 5s ease-in-out infinite;
+}
+
+@keyframes module-tube-breathe {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* Landmark slow ignite when destination unlocks */
+.module-world-landmark--igniting .module-world-landmark__panel {
+  animation: landmark-ignite 2.6s ease-out forwards;
+}
+
+.module-world-landmark--igniting .module-world-landmark__halo {
+  animation: landmark-glow-ignite 2.6s ease-out forwards;
+}
+
+.physics-module-landmark--igniting .pathway-map-node__content {
+  animation: landmark-ignite 2.6s ease-out forwards;
+}
+
+@keyframes landmark-ignite {
+  0% {
+    opacity: 0.45;
+    filter: saturate(0.4) brightness(0.7);
+    box-shadow: none;
+  }
+  40% {
+    opacity: 0.85;
+    filter: saturate(0.85) brightness(1.05);
+  }
+  100% {
+    opacity: 1;
+    filter: saturate(1) brightness(1);
+    box-shadow:
+      0 0 36px color-mix(in srgb, var(--landmark-accent, #22d3ee) 32%, transparent),
+      inset 0 0 18px rgba(34, 211, 238, 0.06);
+  }
+}
+
+@keyframes landmark-glow-ignite {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "curriculum.biology_v1",
+  "label": "Biology — living world (frame curriculum)",
+  "version": 1,
+  "subject": "biology",
+  "chapters": [
+    {
+      "chapterId": 1,
+      "title": "Chapter 1 · Life in Nature",
+      "subtitle": "Cells, organisms, and how life works outdoors",
+      "mapLane": 0.5,
+      "mapRow": 0,
+      "subjectCategory": "life-science",
+      "pathways": [
+        {
+          "pathwayId": "living-biology",
+          "frameModuleSource": "builtin:biologyChapter1",
+          "framesManifest": "biology_v1/biology.frames.manifest.json",
+          "graphFile": "biology_v1/biology_v1.graph.json"
+        }
+      ]
+    }
+  ],
+  "landmarkFlow": ["cells", "organisms", "habitats", "energy-life", "diversity"],
+  "activeLandmarks": ["cells", "organisms"]
+}

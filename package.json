@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/assert-active-root.mjs && vite",
+    "dev:phone": "node scripts/assert-active-root.mjs && vite --host 0.0.0.0",
     "dev:clean": "node scripts/assert-active-root.mjs && node -e \"require('fs').rmSync('node_modules/.vite',{recursive:true,force:true})\" && vite",
     "build": "node scripts/assert-active-root.mjs && tsc --noEmit && vite build",
     "preview": "vite preview"
