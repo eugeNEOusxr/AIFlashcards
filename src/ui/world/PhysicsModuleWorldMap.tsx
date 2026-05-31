@@ -7,7 +7,6 @@ import { resolveEducationalTier } from "../../cognitive/tierResolver";
 import { getPathwayBiome } from "../../world/pathwayBiomes";
 import {
   landmarkById,
-  landmarkPixelPosition,
   LANDMARK_FLOW_ORDER,
   LANDMARK_SLOTS,
   PHYSICS_MODULE_LANDMARKS,
@@ -15,6 +14,9 @@ import {
   physicsModuleMapWidth,
   START_SLOT,
   startPixelPosition,
+  startToMotionTunnelD,
+  landmarkTunnelEntry,
+  landmarkTunnelExit,
   type LandmarkSlot,
   type PhysicsModuleLandmarkId,
 } from "../../world/physicsModuleLandmarks";
@@ -135,18 +137,11 @@ export function PhysicsModuleWorldMap({
 
   const tunnelSegments: ModuleTunnelSegment[] = useMemo(() => {
     const segs: ModuleTunnelSegment[] = [];
-    const start = startPixelPosition();
     const motionSlot = LANDMARK_SLOTS.find((s) => s.id === "motion")!;
-    const motionPos = landmarkPixelPosition(motionSlot);
-
     const motionVisual = mapModel.landmarkVisualState("motion");
     segs.push({
       key: "start-motion",
-      d: tunnelPathD(
-        { x: start.cx, y: start.cy },
-        { x: motionPos.cx, y: motionPos.cy },
-        "subject"
-      ),
+      d: startToMotionTunnelD(motionSlot),
       state:
         motionVisual === "locked"
           ? "dormant"
@@ -163,8 +158,8 @@ export function PhysicsModuleWorldMap({
       const toId = LANDMARK_FLOW_ORDER[i + 1]!;
       const fromSlot = LANDMARK_SLOTS.find((s) => s.id === fromId)!;
       const toSlot = LANDMARK_SLOTS.find((s) => s.id === toId)!;
-      const fromPos = landmarkPixelPosition(fromSlot);
-      const toPos = landmarkPixelPosition(toSlot);
+      const fromPos = landmarkTunnelExit(fromSlot);
+      const toPos = landmarkTunnelEntry(toSlot);
       segs.push({
         key: `${fromId}-${toId}`,
         d: tunnelPathD(

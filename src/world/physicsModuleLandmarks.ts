@@ -76,6 +76,10 @@ export type LandmarkSlot = {
 const MAP_W = 900;
 const MAP_H = 2050;
 
+/** Visual half-height for tunnel attach (center anchor → edge) */
+export const START_ORB_ATTACH_R = 100;
+export const LANDMARK_ATTACH_HALF_H = 90;
+
 /** Horizontal offset toward center (1 = legacy spread) */
 const HORIZONTAL_WEAVE = 0.78;
 
@@ -125,6 +129,41 @@ export function physicsModuleMapHeight(): number {
 
 export function startPixelPosition(): { cx: number; cy: number } {
   return { cx: START_SLOT.cx * MAP_W, cy: START_SLOT.cy * MAP_H };
+}
+
+/** Tunnel leaves the bottom of the Physics entrance orb */
+export function startTunnelExit(): { cx: number; cy: number } {
+  const c = startPixelPosition();
+  return { cx: c.cx, cy: c.cy + START_ORB_ATTACH_R };
+}
+
+/** Tunnel enters the top edge of a landmark card */
+export function landmarkTunnelEntry(slot: LandmarkSlot): { cx: number; cy: number } {
+  const p = landmarkPixelPosition(slot);
+  return { cx: p.cx, cy: p.cy - LANDMARK_ATTACH_HALF_H };
+}
+
+/** Tunnel leaves the bottom edge of a landmark card */
+export function landmarkTunnelExit(slot: LandmarkSlot): { cx: number; cy: number } {
+  const p = landmarkPixelPosition(slot);
+  return { cx: p.cx, cy: p.cy + LANDMARK_ATTACH_HALF_H };
+}
+
+/**
+ * Fixed entrance path: vertical drop from Physics orb, then sweep into Motion & Forces.
+ * Keeps the start tunnel aligned with the orb beacon (not through the orb center).
+ */
+export function startToMotionTunnelD(
+  motionSlot: LandmarkSlot
+): string {
+  const from = startTunnelExit();
+  const to = landmarkTunnelEntry(motionSlot);
+  const dropY = from.cy + Math.max(56, (to.cy - from.cy) * 0.32);
+  const c1x = from.cx;
+  const c1y = dropY;
+  const c2x = to.cx + (from.cx - to.cx) * 0.28;
+  const c2y = dropY + (to.cy - dropY) * 0.55;
+  return `M ${from.cx} ${from.cy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${to.cx} ${to.cy}`;
 }
 
 export function landmarkPixelPosition(slot: LandmarkSlot): {
